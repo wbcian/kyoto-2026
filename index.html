@@ -156,7 +156,7 @@ details.spot .k { color: var(--ink-2); }
 .btns-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
 @media (max-width: 22rem) { .btns-2 { grid-template-columns: 1fr; } }
 /* ===== 分流雙軌 ===== */
-.split { margin: 0 0 var(--sp-4); border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; }
+.split { margin: 0 0 var(--sp-4); border: 1px solid var(--line-strong); border-radius: var(--radius); }
 .split .track { padding: var(--sp-3) var(--sp-4); }
 .split .track + .track { border-top: 1px dashed var(--line-strong); }
 .split .track h4 { font-size: 1rem; font-weight: 600; margin-bottom: var(--sp-2); }
@@ -201,7 +201,7 @@ details.spot .k { color: var(--ink-2); }
   touch-action: manipulation;
 }
 .tabbar a .em { font-size: 1.25em; line-height: 1; }
-.tabbar a[aria-current="true"] { color: var(--indigo); font-weight: 700; }
+.tabbar a[aria-current="true"] { color: var(--indigo); font-weight: 600; }
 /* ===== footer ===== */
 footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) var(--sp-5); color: var(--ink-2); font-size: .875rem; }
 .noscript-note { max-width: 40rem; margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4); }
@@ -243,13 +243,13 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <p class="absent-note">🧍 Bingcian 未參加（12/25 下午抵達會合）</p>
     </header>
     <p class="draft-note">⏳ 本日為草案：依初版行程分析，時刻與細節待柏翰確認後更新。</p>
-    <div class="stay-line">🏨 今晚：大阪住宿 <span class="badge badge-tbd">… 待定</span></div>
+    <div class="stay-line">🏨 今晚：溫泉大阪逸之彩酒店 日本橋 <span class="badge badge-done">✓ 哥已訂</span><span class="badge badge-tbd">… 細節待確認</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI">📍 地圖</a></div>
     <div class="tl">
       <article class="tl-row" data-t="19:10">
         <div class="tl-time"><time>19:10</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">✈️</span>抵達關西機場 KIX</h3></div>
-          <p class="tl-note">哥・柏翰・爸媽 4 人</p>
+          <p class="tl-note">家族先發組（名單／航班待柏翰確認）</p>
         </div>
       </article>
       <div class="tl-row transit"><div class="tl-time"></div><div class="tl-body"><span class="ico">🚆</span>HARUKA（Hello Kitty 塗裝）→ 大阪 <span class="badge badge-todo">▲ 要訂!</span> 11/24 開賣</div></div>
@@ -295,9 +295,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <article class="tl-row">
             <div class="tl-time"><span class="t">午</span></div>
             <div class="tl-body">
-              <div class="tl-head"><h3><span class="ico">🍽️</span>焼肉たむら（箕面萱野駅直結）</h3></div>
+              <div class="tl-head"><h3><span class="ico">🍽️</span><span lang="ja">焼肉たむら</span>（箕面萱野駅直結）</h3></div>
               <p class="tl-note">午餐 L.O. 14:00，建議 12:00–12:30 入座</p>
-              <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=焼肉たむら+みのおキューズモール">🗺️ 在 Google 地圖開啟：焼肉たむら</a>
+              <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=焼肉たむら+みのおキューズモール">🗺️ 在 Google 地圖開啟：<span lang="ja">焼肉たむら</span></a>
             </div>
           </article>
           <article class="tl-row">
@@ -338,9 +338,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <div class="tl-head"><h3>🦉 Owl Cafe Chouette</h3><span class="badge badge-todo">▲ 要訂!</span></div>
           <p class="tl-note">TableCheck 現在就能訂・時段抓 ~16:00 後避入境延誤・遲到逾 10 分＝取消</p>
           <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
-            <p>心斎橋貓頭鷹咖啡（幸せのフクロウカフェ Chouette），入退店 1 小時制、每人必點 1 杯飲品。60 分入店料 ¥2,300／2,600＋飲品 ¥500 起。</p>
+            <p>心斎橋貓頭鷹咖啡（<span lang="ja">幸せのフクロウカフェ</span> Chouette），入退店 1 小時制、每人必點 1 杯飲品。60 分入店料 ¥2,300／2,600＋飲品 ¥500 起。</p>
             <p class="k">預約需登記信用卡；前日取消 50%、當日 100%。定休週一；12/25 照常營業。</p>
-            <p><a href="tel:+81662432960">📞 06-6243-2960（日本）</a></p>
+            <p><a href="tel:+81662432960">📞 06-6243-2960（+81-6-6243-2960）</a></p>
           </div></details>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%B9%B8%E3%81%9B%E3%81%AE%E3%83%95%E3%82%AF%E3%83%AD%E3%82%A6%E3%82%AB%E3%83%95%E3%82%A7Chouette">🗺️ 在 Google 地圖開啟：Chouette</a>
         </div>
@@ -354,7 +354,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>~19:15</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">🍽️</span>晚餐</h3><span class="badge badge-tbd">… 待定</span></div>
-          <p class="tl-note"><span class="badge badge-opt">🔸 備選</span> おにまる炙烤飯糰（寺町通・開到 21:00・12/25 是否營業行前致電確認）</p>
+          <p class="tl-note"><span class="badge badge-opt">🔸 備選</span> <span lang="ja">おにまる</span>炙烤飯糰（寺町通・開到 21:00・12/25 是否營業行前致電確認）</p>
         </div>
       </article>
     </div>
@@ -405,10 +405,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="11:30">
         <div class="tl-time"><time>11:30</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3>傘松公園（股のぞき）</h3></div>
+          <div class="tl-head"><h3>傘松公園（<span lang="ja">股のぞき</span>）</h3></div>
           <p class="tl-note">全程纜車上山・山上平緩・元伊勢籠神社時間夠才加</p>
           <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
-            <p>「斜め一文字」最佳俯瞰點，倒看沙洲如天界飛橋，冬季雪景最美。⚠️ 強風纜車有停駛風險。</p>
+            <p>「<span lang="ja">斜め一文字</span>」最佳俯瞰點，倒看沙洲如天界飛橋，冬季雪景最美。⚠️ 強風纜車有停駛風險。</p>
             <p class="k">元伊勢籠神社（山腳・平地 30 分）：傳說天照大神曾遷祀的「元伊勢」，丹後最高格神社。</p>
           </div></details>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=傘松公園">🗺️ 在 Google 地圖開啟：傘松公園</a>
@@ -417,9 +417,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="12:30">
         <div class="tl-time"><time>12:30</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3><span class="ico">🍽️</span>午餐 はしだて茶屋</h3></div>
-          <p class="tl-note">文珠側・あさり丼 約 ¥1,100・年末營業已確認最穩 <a href="tel:+81772223363">📞 0772-22-3363（日本）</a></p>
-          <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=はしだて茶屋">🗺️ 在 Google 地圖開啟：はしだて茶屋</a>
+          <div class="tl-head"><h3><span class="ico">🍽️</span>午餐 <span lang="ja">はしだて茶屋</span></h3></div>
+          <p class="tl-note">文珠側・あさり丼 約 ¥1,100・年末營業已確認最穩 <a href="tel:+81772223363">📞 0772-22-3363（+81-772-22-3363）</a></p>
+          <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=はしだて茶屋">🗺️ 在 Google 地圖開啟：<span lang="ja">はしだて茶屋</span></a>
         </div>
       </article>
       <article class="tl-row" data-t="14:16">
@@ -432,7 +432,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </div></details>
         </div>
       </article>
-      <div class="tl-row transit"><div class="tl-time"><time>~15:35</time></div><div class="tl-body"><span class="ico">🚌</span>赤れんが巴士 西舞鶴 → 京都（¥2,400–2,600・午後班少，或 17:48→19:25 班）</div></div>
+      <div class="tl-row transit"><div class="tl-time"><time>~15:35</time></div><div class="tl-body"><span class="ico">🚌</span><span lang="ja">赤れんが</span>巴士 西舞鶴 → 京都（¥2,400–2,600・午後班少，或 17:48→19:25 班）</div></div>
       <article class="tl-row" data-t="18:30">
         <div class="tl-time"><time>~18:30</time></div>
         <div class="tl-body"><div class="tl-head"><h3><span class="ico">🍽️</span>京都晚餐</h3></div></div>
@@ -482,7 +482,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>11:15</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">🍽️</span>午餐（高台寺一帶輕食）</h3></div>
-          <p class="tl-note"><span class="badge badge-opt">🔸 備選</span> 玄品河豚（祇園）：當天 17:00 開店有空再去・要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（日本）</a></p>
+          <p class="tl-note"><span class="badge badge-opt">🔸 備選</span> 玄品河豚（祇園）：當天 17:00 開店有空再去・要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（+81-75-531-5815）</a></p>
         </div>
       </article>
       <article class="tl-row" data-t="12:30">
@@ -496,12 +496,12 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row anchor" data-t="14:00">
         <div class="tl-time"><time>14:00</time><span class="t-sub">–~15:00</span></div>
         <div class="tl-body">
-          <div class="tl-head"><h3>知恩院 除夜の鐘 試し撞き</h3><span class="badge badge-anchor">★ 錨點</span></div>
+          <div class="tl-head"><h3>知恩院 <span lang="ja">除夜の鐘 試し撞き</span></h3><span class="badge badge-anchor">★ 錨點</span></div>
           <p class="tl-note warn">⚠️ 走緩坡「女坂」（接駁 13:00–14:00 停駛）・免費免預約會限流・前排 13:00 到</p>
           <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
             <p>日本最大級木造國寶三門的淨土宗總本山；17 名僧侶合撞 70 噸巨鐘的本番彩排，可近距離看。</p>
             <p class="k">禁三腳架/自拍棒/閃光｜2026 官方尚未公告，11–12 月複查官網＋電話。</p>
-            <p><a href="tel:+81755312111">📞 075-531-2111（日本）</a></p>
+            <p><a href="tel:+81755312111">📞 075-531-2111（+81-75-531-2111）</a></p>
           </div></details>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院">🗺️ 在 Google 地圖開啟：知恩院</a>
         </div>
@@ -520,8 +520,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="18:00">
         <div class="tl-time"><time>18:00</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3><span class="ico">🍽️</span>晚餐：志ぐれ（円山公園）或先斗町</h3></div>
-          <p class="tl-note">志ぐれ通し營業 11–22・椅子個室・須訂 <a href="tel:+815054860593">📞 050-5486-0593（日本）</a></p>
+          <div class="tl-head"><h3><span class="ico">🍽️</span>晚餐：<span lang="ja">志ぐれ</span>（円山公園）或先斗町</h3></div>
+          <p class="tl-note"><span lang="ja">志ぐれ</span>通し營業 11–22・椅子個室・須訂 <a href="tel:+815054860593">📞 050-5486-0593（+81-50-5486-0593）</a></p>
         </div>
       </article>
       <article class="tl-row" data-t="20:30">
@@ -563,8 +563,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <div class="tl-head"><h3>☕ 中村藤吉本店</h3></div>
           <p class="tl-note">10:00 才開・現場抽整理券（不收預約）；替代：辻利兵衛本店（JR 站側）</p>
           <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
-            <p>1854 年創業的宇治抹茶甜點老舖，本店限定生茶ゼリイ與竹筒まるとパフェ必點。</p>
-            <p class="k">主要負擔是排隊久站，可代為記名候位；官網有即時候位看板。<a href="tel:+81774227800">📞 0774-22-7800（日本）</a></p>
+            <p>1854 年創業的宇治抹茶甜點老舖，本店限定<span lang="ja">生茶ゼリイ</span>與竹筒<span lang="ja">まるとパフェ</span>必點。</p>
+            <p class="k">主要負擔是排隊久站，可代為記名候位；官網有即時候位看板。<a href="tel:+81774227800">📞 0774-22-7800（+81-774-22-7800）</a></p>
           </div></details>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97">🗺️ 在 Google 地圖開啟：中村藤吉本店</a>
         </div>
@@ -661,9 +661,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="12:00">
         <div class="tl-time"><time>12:00</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3><span class="ico">🍽️</span>鍋物午餐 仲よし</h3><span class="badge badge-todo">▲ 要訂!</span></div>
-          <p class="tl-note">ぼたん鍋 ¥8,500・提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（日本）</a>（ひろ文年末全休）</p>
-          <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=貴船+仲よし">🗺️ 在 Google 地圖開啟：仲よし</a>
+          <div class="tl-head"><h3><span class="ico">🍽️</span>鍋物午餐 <span lang="ja">仲よし</span></h3><span class="badge badge-todo">▲ 要訂!</span></div>
+          <p class="tl-note"><span lang="ja">ぼたん鍋</span> ¥8,500・提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（+81-75-741-2000）</a>（<span lang="ja">ひろ文</span>年末全休）</p>
+          <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=貴船+仲よし">🗺️ 在 Google 地圖開啟：<span lang="ja">仲よし</span></a>
         </div>
       </article>
       <div class="tl-row transit"><div class="tl-time"><time>~13:30</time></div><div class="tl-body"><span class="ico">🚌</span>33 巴士下山（休日末班 ≈18:14・從容）→ 貴船口 → 叡電 → 出町柳</div></div>
@@ -671,9 +671,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>~14:30</time><span class="t-sub">~1h</span></div>
         <div class="tl-body">
           <div class="tl-head"><h3>⛩️ 下鴨神社</h3></div>
-          <p class="tl-note">出町柳旁・糺の森平路・爸媽友善</p>
+          <p class="tl-note">出町柳旁・<span lang="ja">糺の森</span>平路・爸媽友善</p>
           <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
-            <p>京都最古老神社之一（世界遺產），糺の森原始森林宜慢遊；河合神社為「日本第一美麗祈願」神社。</p>
+            <p>京都最古老神社之一（世界遺產），<span lang="ja">糺の森</span>原始森林宜慢遊；河合神社為「日本第一美麗祈願」神社。</p>
           </div></details>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社">🗺️ 在 Google 地圖開啟：下鴨神社</a>
         </div>
@@ -686,7 +686,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><span class="t">餐後</span></div>
         <div class="tl-body">
           <div class="tl-head"><h3>🛍️ 有剩餘時間才逛街（非硬排）</h3></div>
-          <p class="tl-note">要買衣服的話今晚是唯一現實時段（12/30 早 ユニクロ 10:00 才開來不及）</p>
+          <p class="tl-note">要買衣服的話今晚是唯一現實時段（12/30 早 <span lang="ja">ユニクロ</span> 10:00 才開來不及）</p>
         </div>
       </article>
     </div>
@@ -716,7 +716,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-time"><time>08:15</time><span class="t-sub">–09:45</span></div>
             <div class="tl-body">
               <div class="tl-head"><h3>🛍️ 京都駅周邊採購</h3></div>
-              <p class="tl-note">此時段真正開門的：おみやげ街道（7:30・伴手禮）、コクミンドラッグ Porta B1F（7:00・唯一早開藥妝）、成城石井/志津屋（7:00）。ヨドバシ 9:30 後；<strong>硬性截止 09:45</strong></p>
+              <p class="tl-note">此時段真正開門的：<span lang="ja">おみやげ街道</span>（7:30・伴手禮）、<span lang="ja">コクミンドラッグ</span> Porta B1F（7:00・唯一早開藥妝）、成城石井/志津屋（7:00）。ヨドバシ 9:30 後；<strong>硬性截止 09:45</strong></p>
             </div>
           </article>
           <article class="tl-row" data-t="10:15">
@@ -745,7 +745,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
               <div class="tl-head"><h3>嵐山一帶：天龍寺・竹林・渡月橋</h3><span class="badge badge-tbd">… 草案</span></div>
               <p class="tl-note">飯店 JR 嵯峨野線<strong>直達</strong>不用轉車（住宿最大甜蜜點）；候選：金閣寺（原嵐山日行程・次序未定）</p>
               <details class="spot"><summary>詳細資訊</summary><div class="spot-body">
-                <p>天龍寺：世遺庭園借嵐山景，12/29 前開放、12/31–1/2 公休，<strong>12/30 是最後安全日</strong>。北門出去就是竹林步道（平緩）。渡月橋平地可走可坐。</p>
+                <p>天龍寺：世遺庭園借嵐山景；12/31–1/2 公休，<strong>12/30 仍開放（公休前最後一天）</strong>。北門出去就是竹林步道（平緩）。渡月橋平地可走可坐。</p>
                 <p class="k">嵐山小火車 12/30 起冬季全休 → 已確定不搭。法輪寺階梯多，爸媽略過。</p>
               </div></details>
               <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺">🗺️ 在 Google 地圖開啟：天龍寺</a>
@@ -797,7 +797,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="22:30">
         <div class="tl-time"><time>22:30</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3>智積院 除夜の鐘</h3></div>
+          <div class="tl-head"><h3>智積院 <span lang="ja">除夜の鐘</span></h3></div>
           <p class="tl-note">人少・平地腹地寬・比八阪/知恩院更適合長者</p>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=智積院">🗺️ 在 Google 地圖開啟：智積院</a>
         </div>
@@ -805,7 +805,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row">
         <div class="tl-time"><span class="t">深夜</span></div>
         <div class="tl-body">
-          <div class="tl-head"><h3>八阪神社 をけら詣り</h3><span class="badge badge-opt">🔸 選項</span></div>
+          <div class="tl-head"><h3>八阪神社 <span lang="ja">をけら詣り</span></h3><span class="badge badge-opt">🔸 選項</span></div>
           <p class="tl-note warn">19:30 起通宵；⚠️ 大晦日 ~23:00 起境內封閉管制、四条通極擠——長者不熬夜，年輕人自由參加</p>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=八坂神社">🗺️ 在 Google 地圖開啟：八阪神社</a>
         </div>
@@ -839,7 +839,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <p class="tl-note warn">⚠️ 1/1 多數店公休（錦市場幾乎全休）——便利店或飯店周邊保險</p>
         </div>
       </article>
-      <div class="tl-row transit"><div class="tl-time"></div><div class="tl-body"><span class="ico">🚆</span>京都 → HARUKA → 臨空城（りんくうタウン）</div></div>
+      <div class="tl-row transit"><div class="tl-time"></div><div class="tl-body"><span class="ico">🚆</span>京都 → HARUKA → 臨空城（<span lang="ja">りんくうタウン</span>）</div></div>
       <article class="tl-row">
         <div class="tl-time"><span class="t">下午</span></div>
         <div class="tl-body">
@@ -872,7 +872,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </li>
     <li data-open="2026-11-26" data-status="todo">
       <div class="bk-head"><h3>京都 ⇄ 天橋立 高速巴士 去＋回（12/26・5 人）</h3><span class="bk-open">11/26 開賣</span><span class="bk-count"></span><span class="who">柏翰</span></div>
-      <p class="bk-note">去程 07:20 烏丸口C2 丹海巴士；回程 西舞鶴 赤れんが巴士。開放 1 個月前預訂。</p>
+      <p class="bk-note">去程 07:20 烏丸口C2 丹海巴士；回程 西舞鶴 <span lang="ja">赤れんが</span>巴士。開放 1 個月前預訂。</p>
     </li>
     <li data-open="2026-11-30" data-status="todo">
       <div class="bk-head"><h3>HARUKA 12/30 11:01 班（返程）</h3><span class="bk-open">11/30 開賣</span><span class="bk-count"></span><span class="who">Bingcian</span></div>
@@ -880,11 +880,11 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </li>
     <li data-open="2026-12-01" data-status="todo">
       <div class="bk-head"><h3>仲よし ぼたん鍋（12/29 貴船午餐・5 人）</h3><span class="bk-open">12 月上旬電話</span><span class="who">柏翰／Bingcian</span></div>
-      <p class="bk-note">提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（日本）</a>。ひろ文年末 12/21–1/3 全休，別家沒得換。</p>
+      <p class="bk-note">提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（+81-75-741-2000）</a>。<span lang="ja">ひろ文</span>年末 12/21–1/3 全休，別家沒得換。</p>
     </li>
     <li data-status="todo">
       <div class="bk-head"><h3>志ぐれ（12/27 晚餐・5 人個室）</h3><span class="bk-open">2026 秋電話確認</span><span class="who">柏翰</span></div>
-      <p class="bk-note">確認 5 人椅子個室＋12/27 年末營業後訂位 <a href="tel:+815054860593">📞 050-5486-0593（日本）</a>。</p>
+      <p class="bk-note">確認 5 人椅子個室＋12/27 年末營業後訂位 <a href="tel:+815054860593">📞 050-5486-0593（+81-50-5486-0593）</a>。</p>
     </li>
     <li data-status="onsite">
       <div class="bk-head"><h3>鞍馬貴船一日券（12/29・全家）</h3><span class="bk-open">當天現場買</span><span class="who">全家</span></div>
@@ -892,7 +892,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </li>
     <li data-status="option">
       <div class="bk-head"><h3>玄品河豚 祇園（12/27）</h3><span class="badge badge-opt">🔸 備選</span><span class="who">柏翰</span></div>
-      <p class="bk-note">敲鐘後若 17:00 開店又有空再去（walk-in 不保證）；要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（日本）</a>。</p>
+      <p class="bk-note">敲鐘後若 17:00 開店又有空再去（walk-in 不保證）；要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（+81-75-531-5815）</a>。</p>
     </li>
     <li class="dropped" data-status="dropped">
       <div class="bk-head"><h3>嵐山小火車</h3><span class="bk-open">不需要・已放掉</span></div>
@@ -920,8 +920,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
   </div>
   <div class="card">
-    <h3>12/24 晚・大阪住宿 <span class="badge badge-tbd">… 待定</span></h3>
-    <p class="kv">12/24 抵達當晚住大阪，飯店待確認。</p>
+    <h3>12/24 晚・大阪住宿 <span class="badge badge-done">✓ 哥已訂</span></h3>
+    <p>溫泉大阪逸之彩酒店 日本橋（Hot spring OSAKA HINODE HOTEL NIPPONBASHI）</p>
+    <p class="kv">雙床房含 2 份早餐——與 12/24 入住名單/晚數是否相符，待哥與柏翰確認。</p>
+    <div class="btns-2"><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI">🗺️ 開地圖</a></div>
   </div>
   <div class="card">
     <h3>✈️ 航班</h3>
