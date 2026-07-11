@@ -15,7 +15,7 @@
   --bg:#FBF7EF; --surface:#FFFFFF; --ink:#2B2A28; --ink-2:#6E6658;
   --line:#EBE2CE; --line-strong:#D8CBAF;
   --accent:#A31F2D; --green:#3E6B52; --amber:#8A5F0A;
-  --indigo:#2A467F; --night:#1B2440; --night-ink:#EFE9DC;
+  --indigo:#2A467F; --night:#1B2440; --night-ink:#EFE9DC; --band:#EFEADD;
   --seg-on-bg:var(--night); --seg-on-ink:var(--night-ink);
   --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem;
   --radius:8px; --radius-card:11px; --radius-chip:9px; --radius-note:6px; --radius-pill:999px;
@@ -27,7 +27,7 @@
     --bg:#191714; --surface:#23201C; --ink:#EAE3D6; --ink-2:#B3AA98;
     --line:#3A362F; --line-strong:#5C5544; --btn-edge:#877D68;
     --accent:#D96A5B; --green:#6FAE8C; --amber:#D2A94E;
-    --indigo:#8FA8DC; --night:#0E1322; --night-ink:#EAE3D6;
+    --indigo:#8FA8DC; --night:#0E1322; --night-ink:#EAE3D6; --band:#26221C;
   }
 }
 /* ===== base ===== */
@@ -43,7 +43,7 @@ body {
 }
 .display { font-family: var(--font-serif); }
 main { max-width: 40rem; width: 100%; margin-inline: auto; padding: 0 var(--sp-4) 7rem; }
-section[id] { scroll-margin-top: 6.5rem; }
+section[id] { scroll-margin-top: 9rem; } /* sticky header（brand+rail ≈ 8.5rem）＋ 8px 帶 */
 h1,h2,h3,h4 { line-height: 1.35; margin: 0; }
 a { color: var(--indigo); }
 a[href^="tel:"] { display: inline-flex; align-items: center; min-height: var(--tap); padding: .4em .6em; font-weight: 600; }
@@ -85,15 +85,15 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
   background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--accent);
   border-radius: var(--radius-card); text-decoration: none; color: var(--ink); font-weight: 500; font-size: .8125rem; line-height: 1.5;
 }
-/* ===== views（無 JS：全部平鋪；有 JS：單日視圖） ===== */
+/* ===== views（行程＝9 天連續長卷軸，同設計稿捲動模型；訂票/住宿・資訊＝分頁） ===== */
 html.js body[data-view="days"] .page { display: none; }
 html.js body[data-view="bookings"] #view-days,
 html.js body[data-view="bookings"] #info { display: none; }
 html.js body[data-view="info"] #view-days,
 html.js body[data-view="info"] #bookings { display: none; }
-html.js body[data-view="days"] .day { display: none; }
-html.js body[data-view="days"] .day.active { display: block; }
 html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
+/* 日與日的厚帶分界（設計稿 8px #efeadd）；label 式 day-sep 留給無 JS 與節日 */
+html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
 /* ===== 短冊日界線（無 JS 長頁時的日分隔） ===== */
 .day { padding-top: var(--sp-5); }
 .day-sep { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); color: var(--ink-2); margin-bottom: var(--sp-4); }
@@ -1125,6 +1125,23 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     if (todaySec) return todaySec.id;
     return 'd1';
   }
+  // 行程頁＝9 天連續長卷軸（設計稿捲動模型）：chip 是原生 anchor（scroll-margin-top 抵銷 sticky header），
+  // 現用日由 scroll spy 回寫 date rail；.day 不再做單日 display 切換
+  var lastView = null;
+  var rail = document.querySelector('.daystrip');
+  var lastActiveId = null;
+  function setActiveChip(id, centerRail) {
+    var href = '#' + id, curChip = null;
+    chips.forEach(function (c) {
+      var on = c.getAttribute('href') === href;
+      if (on) curChip = c;
+      if (id !== lastActiveId) c.setAttribute('aria-current', String(on)); // spy 每 frame 呼叫，同值不重寫
+    });
+    if (id !== lastActiveId) { lastActiveId = id; tabs.days.setAttribute('href', href); }
+    // rail 置中只在明確動作（點 chip／切檢視）做，spy 不置中（同設計稿原型）：
+    // ① sticky 內元素用 scrollIntoView 會把視窗捲回頁頂；② 平滑捲動中寫 rail.scrollLeft 會取消進行中的視窗動畫
+    if (centerRail && curChip) rail.scrollLeft = Math.max(0, curChip.offsetLeft - rail.offsetLeft - (rail.clientWidth - curChip.offsetWidth) / 2);
+  }
   function render() {
     var h = location.hash;
     var view = 'days';
@@ -1133,29 +1150,57 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     document.body.setAttribute('data-view', view);
     Object.keys(tabs).forEach(function (k) { tabs[k].setAttribute('aria-current', String(k === view)); });
     if (view === 'days') {
-      var id = currentDayId(), href = '#' + id, curChip = null;
-      days.forEach(function (d) { d.classList.toggle('active', d.id === id); });
-      chips.forEach(function (c) {
-        var on = c.getAttribute('href') === href;
-        c.setAttribute('aria-current', String(on));
-        if (on) curChip = c;
-      });
-      if (curChip) curChip.scrollIntoView({ inline: 'center', block: 'nearest' });
-      tabs.days.setAttribute('href', href);
-      renderDayBanner(id);
+      setActiveChip(currentDayId(), true); // 明確動作：rail 置中
+      renderDayBanner();
     }
+    lastView = view;
   }
-  function renderDayBanner(id) {
-    var sec = document.getElementById(id);
+  // banner 恆顯「今天」的重點（長卷軸下與目前捲到哪一天無關）；行前顯示最近訂票倒數
+  function renderDayBanner() {
     var msg = '';
-    if (inTrip && sec && sec.getAttribute('data-date') === today && sec.getAttribute('data-banner')) {
-      var dd = sec.getAttribute('data-date').split('-'); // 2026-12-27 → 12/27（設計稿 banner 格式）
-      msg = '<a class="bn" href="#' + id + '">⏰ 今天 ' + (+dd[1]) + '/' + (+dd[2]) + ' 重點：' + sec.getAttribute('data-banner') + '</a>';
+    if (inTrip && todaySec && todaySec.getAttribute('data-banner')) {
+      var dd = todaySec.getAttribute('data-date').split('-'); // 2026-12-27 → 12/27（設計稿 banner 格式）
+      msg = '<a class="bn" href="#' + todaySec.id + '">⏰ 今天 ' + (+dd[1]) + '/' + (+dd[2]) + ' 重點：' + todaySec.getAttribute('data-banner') + '</a>';
     } else if (!inTrip && today < TRIP_START) {
       msg = preTripBanner();
     }
     banner.innerHTML = msg;
   }
+  // scroll spy：取「區塊頂已進到 sticky header 下緣 +90px 內」的最後一天（rAF 節流；
+  // 捲動中必有 frame，rAF 在此可靠——不可靠的是無捲動的背景分頁，那時也不會有 scroll 事件）
+  var topEl = document.querySelector('.top');
+  // 平滑捲動＋保險絲：部分環境（省電模式/webview/系統停用動畫）smooth 會 no-op 或被取消——
+  // 700ms 未到位就 instant 補跳；reduced-motion 一律 instant；seq 讓連點時舊保險絲失效
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fuseSeq = 0;
+  function smoothTo(el, block) {
+    block = block || 'start';
+    if (REDUCED) { el.scrollIntoView({ behavior: 'instant', block: block }); return; }
+    var seq = ++fuseSeq;
+    el.scrollIntoView({ behavior: 'smooth', block: block });
+    setTimeout(function () {
+      if (seq !== fuseSeq) return;
+      var r = el.getBoundingClientRect();
+      var arrived = (block === 'center')
+        ? (r.top > 0 && r.top < window.innerHeight * .7)
+        : (Math.abs(r.top - topEl.getBoundingClientRect().bottom) < 160);
+      if (!arrived) el.scrollIntoView({ behavior: 'instant', block: block });
+    }, 700);
+  }
+  var spyRaf = null;
+  function spyPick() {
+    var hb = topEl.getBoundingClientRect().bottom; // sticky＝header 高；200% 靜態捲離後為負，仍正確
+    var cur = days[0];
+    for (var i = 0; i < days.length; i++) {
+      if (days[i].getBoundingClientRect().top <= hb + 90) cur = days[i]; else break;
+    }
+    if (cur) setActiveChip(cur.id);
+  }
+  window.addEventListener('scroll', function () {
+    if (document.body.getAttribute('data-view') !== 'days') return;
+    if (spyRaf) return;
+    spyRaf = requestAnimationFrame(function () { spyRaf = null; spyPick(); });
+  }, { passive: true });
   function daysUntil(iso) {
     var ms = Date.parse(iso + 'T00:00:00+09:00') - Date.parse(today + 'T00:00:00+09:00');
     return Math.round(ms / 86400000);
@@ -1212,17 +1257,17 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   // instant：載入時直接定位（不從頁首一路滑過去）；按〔今〕才用預設的平滑捲動
   function scrollToNow(instant) {
     if (!todaySec) return;
-    var behavior = instant ? 'instant' : 'auto';
     var nl = todaySec.querySelector('.now-line');
-    if (nl) nl.scrollIntoView({ block: 'center', behavior: behavior });
-    else todaySec.scrollIntoView({ behavior: behavior });
+    var el = nl || todaySec, block = nl ? 'center' : 'start';
+    if (instant) { el.scrollIntoView({ behavior: 'instant', block: block }); return; }
+    smoothTo(el, block);
   }
-  // 換日時 hashchange 才會捲到「現在」；否則 hashchange 一律回頁首
+  // 「今天」：行程頁內＝直接捲到「現在」（不動 hash，chip 交給 spy）；在訂票/資訊頁＝先切回行程再捲
   var pendingNow = false;
   function goNow() {
     if (!todaySec) return;
-    var target = '#' + todaySec.id;
-    if (location.hash !== target) { pendingNow = true; location.hash = target; return; }
+    if (document.body.getAttribute('data-view') !== 'days') { pendingNow = true; location.hash = '#' + todaySec.id; return; }
+    setActiveChip(todaySec.id, true); // 先寫（語意即「今天」）：rail 置中要在啟動平滑捲動前，寫在後會取消動畫
     placeNowLine();
     scrollToNow();
   }
@@ -1230,20 +1275,40 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   fabNow.addEventListener('click', goNow);
 
   window.addEventListener('hashchange', function () {
-    render(); // 同步：跑完 .day.active 已生效，且瀏覽器的 fragment 跳轉早於本 handler
-    if (!pendingNow) { window.scrollTo(0, 0); return; }
-    pendingNow = false;
-    placeNowLine();
-    scrollToNow(); // 不用 rAF：沒在產生 frame 的分頁（背景／被節流的 webview）不會回呼
+    var prevView = lastView;
+    render(); // 同步：data-view 已生效，且瀏覽器的 fragment 跳轉早於本 handler
+    if (document.body.getAttribute('data-view') !== 'days') { window.scrollTo({ top: 0, behavior: 'instant' }); return; } // 兩參數 scrollTo 會吃 CSS smooth，切頁要 instant
+    if (pendingNow) {
+      pendingNow = false;
+      placeNowLine();
+      scrollToNow(); // 不用 rAF：沒在產生 frame 的分頁（背景／被節流的 webview）不會回呼
+      return;
+    }
+    // 捲到目標日一律自己來（實測原生 fragment 捲動在此不可靠）：
+    // 跨分頁切回＝instant；行程頁內點 chip＝'auto'（跟隨 CSS smooth；reduced-motion 自動 instant）
+    var id = activeDayFromHash();
+    var target = id ? document.getElementById(id) : null;
+    if (prevView && prevView !== 'days') {
+      if (target) target.scrollIntoView({ behavior: 'instant' });
+      else window.scrollTo({ top: 0, behavior: 'instant' });
+    } else if (target) {
+      smoothTo(target);
+    }
+  });
+
+  // 點「目前所在日」的 chip 不會觸發 hashchange，補一個跳回該日頂端
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      if (location.hash !== c.getAttribute('href')) return; // 不同日交給 hashchange
+      var t = document.getElementById(c.getAttribute('href').slice(1));
+      if (t) smoothTo(t);
+    });
   });
 
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) return;
-    var prev = todaySec;
-    recomputeToday(); // 可能已跨過午夜
+    recomputeToday(); // 可能已跨過午夜：banner／now 線／訂票倒數重算；長卷軸下不自動跳頁，由使用者按「今天」
     renderBookings();
-    // 日期翻頁而畫面還停在昨天 → 帶到新的今天（含捲到「現在」）
-    if (todaySec && prev && prev !== todaySec && location.hash === '#' + prev.id) { goNow(); return; }
     render();
     placeNowLine();
   });
