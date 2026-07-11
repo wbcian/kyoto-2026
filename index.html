@@ -11,12 +11,15 @@
 /* ===== tokens（懷紙上的時刻表：紙・墨・線・四狀態色） ===== */
 :root {
   color-scheme: light dark;
-  --bg:#FBF7EF; --surface:#FFFFFF; --ink:#2B2A28; --ink-2:#4C5F66;
-  --line:#E3D9C4; --line-strong:#C9BCA3;
-  --accent:#A31F2D; --green:#2E6B4A; --amber:#8A5F0A;
-  --indigo:#223A70; --night:#1B2440; --night-ink:#EDE8DC;
+  /* 和紙暖（交接包 1a 預設 palette；值對齊設計稿，深色沿用夜鉄紺） */
+  --bg:#FBF7EF; --surface:#FFFFFF; --ink:#2B2A28; --ink-2:#6E6658;
+  --line:#EBE2CE; --line-strong:#D8CBAF;
+  --accent:#A31F2D; --green:#3E6B52; --amber:#8A5F0A;
+  --indigo:#2A467F; --night:#1B2440; --night-ink:#EFE9DC;
+  --seg-on-bg:var(--night); --seg-on-ink:var(--night-ink);
   --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem;
-  --radius:8px; --radius-pill:999px; --tap:3rem; --btn-edge:#8C7B5A;
+  --radius:8px; --radius-card:11px; --radius-chip:9px; --radius-note:6px; --radius-pill:999px;
+  --tap:3rem; --btn-edge:#8C7B5A;
   --font-serif:"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif TC", "Noto Serif CJK TC", serif;
 }
 @media (prefers-color-scheme: dark) {
@@ -24,7 +27,7 @@
     --bg:#191714; --surface:#23201C; --ink:#EAE3D6; --ink-2:#B3AA98;
     --line:#3A362F; --line-strong:#5C5544; --btn-edge:#877D68;
     --accent:#D96A5B; --green:#6FAE8C; --amber:#D2A94E;
-    --indigo:#8FA8DC; --night:#12182B; --night-ink:#EAE3D6;
+    --indigo:#8FA8DC; --night:#0E1322; --night-ink:#EAE3D6;
   }
 }
 /* ===== base ===== */
@@ -68,7 +71,7 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 .chip {
   flex: 0 0 auto; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
   min-width: 3.4rem; min-height: var(--tap); padding: .25em .7em;
-  border: 1px solid rgba(237,232,220,.4); border-radius: var(--radius);
+  border: 1px solid rgba(237,232,220,.4); border-radius: var(--radius-chip);
   color: var(--night-ink); text-decoration: none; text-align: center;
   font-size: .9375rem; line-height: 1.3; touch-action: manipulation;
 }
@@ -81,7 +84,7 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 #banner .bn {
   display: block; padding: var(--sp-3) var(--sp-4);
   background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--accent);
-  border-radius: var(--radius); text-decoration: none; color: var(--ink); font-weight: 500;
+  border-radius: var(--radius-card); text-decoration: none; color: var(--ink); font-weight: 500;
 }
 /* ===== views（無 JS：全部平鋪；有 JS：單日視圖） ===== */
 html.js body[data-view="days"] .page { display: none; }
@@ -101,33 +104,41 @@ html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
 .day-head h2 { font-size: 1.375rem; font-weight: 600; letter-spacing: .02em; }
 .day-head .theme { color: var(--ink-2); font-size: .9375rem; margin: .1em 0 0; }
 .day-head .absent-note { margin: var(--sp-2) 0 0; padding: .35em .8em; display: inline-block; background: var(--surface); border: 1px dashed var(--line-strong); border-radius: var(--radius); color: var(--ink-2); font-size: .9375rem; }
-.stay-line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0 var(--sp-4); padding: var(--sp-2) var(--sp-3); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); font-size: .9375rem; }
+.stay-line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0 var(--sp-4); padding: var(--sp-2) var(--sp-3); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); font-size: .9375rem; }
 .stay-line a { font-weight: 600; white-space: nowrap; }
 .draft-note { margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4); background: transparent; border: 1.5px dashed var(--amber); border-radius: var(--radius); color: var(--amber); font-size: .9375rem; }
 /* ===== timeline ===== */
 /* container query 而非 media query：字級放大時視窗寬度不變，只有容器的 em 數會變小 */
 .tl { margin: 0; container-type: inline-size; }
-.tl-row { display: grid; grid-template-columns: 4.5em 1fr; column-gap: var(--sp-2); }
+.tl-row { display: grid; grid-template-columns: 3.4em 1fr; column-gap: var(--sp-3); }
 .tl-row > * { min-width: 0; } /* 讓內容欄能縮到容器寬以下，字放大時靠斷行而非溢出 */
 .tl-time { text-align: right; padding-top: .1rem; }
-.tl-time time, .tl-time .t { font-size: 1.0625rem; font-weight: 600; white-space: nowrap; }
-.tl-time .t { color: var(--ink-2); } /* 模糊時段（上午/午/晚）降一級，別讓人誤當準點 */
-.tl-time .t-sub { display: block; font-size: .8125rem; color: var(--ink-2); line-height: 1.4; }
-.tl-body { position: relative; border-left: 2px solid var(--line); padding: 0 0 var(--sp-4) var(--sp-4); min-height: 2rem; }
-.tl-body::before { content: ""; position: absolute; left: -5px; top: .5em; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
-.tl-row.anchor .tl-body::before { background: var(--indigo); }
+.tl-time time { font-size: .9375rem; font-weight: 700; white-space: nowrap; }
+.tl-time .t { font-size: .8125rem; font-weight: 600; white-space: nowrap; color: var(--ink-2); } /* 模糊時段（上午/午/晚）降一級且較小，別讓人誤當準點 */
+.tl-time .t-sub { display: block; font-size: .75rem; color: var(--ink-2); line-height: 1.4; }
+.tl-body { position: relative; border-left: 2px solid var(--line); padding: 0 0 1.125rem var(--sp-4); min-height: 2rem; }
+.tl-body::before { content: ""; position: absolute; left: -6px; top: .4em; width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); border: 2px solid var(--surface); }
+.tl-row.anchor .tl-body { border-left-color: var(--indigo); }
+.tl-row.anchor .tl-body::before { width: 11px; height: 11px; left: -6.5px; top: .35em; background: var(--indigo); }
+/* 錨點景點：靛色淡底卡（對齊設計稿 anchor stop） */
+.anchor-card { margin-top: .1rem; padding: var(--sp-3); background: color-mix(in srgb, var(--indigo) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--indigo) 22%, var(--line)); border-radius: var(--radius-card); }
+.anchor-card > :first-child { margin-top: 0; }
 .tl-row.transit .tl-body::before { content: none; }
-.tl-row.transit .tl-body { padding-top: 0; padding-bottom: var(--sp-3); color: var(--ink-2); font-size: .9375rem; }
+.tl-row.transit .tl-body { padding-top: 0; padding-bottom: var(--sp-3); color: var(--ink-2); font-size: .8125rem; line-height: 1.5; }
+.tl-row.transit .tl-time time { font-size: .8125rem; font-weight: 400; color: var(--ink-2); }
 .tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35em .6em; }
-.tl-head h3 { font-size: 1.125rem; font-weight: 600; }
+.tl-head h3 { font-size: 1rem; font-weight: 700; }
 .tl-note { margin: .15em 0 0; color: var(--ink-2); font-size: .9375rem; }
-.tl-note.warn { color: var(--ink); background: color-mix(in srgb, var(--amber) 12%, transparent); border-left: 4px solid var(--amber); padding: .4em .7em; border-radius: var(--radius); }
-/* 時間欄固定 4.5em：字放大到它吃掉內容欄時（320px×200% 只剩 94px）改疊成上下兩行 */
+.tl-note.warn { color: #6b5a2a; background: rgba(138,95,10,.09); border-left: 3px solid var(--amber); padding: 6px 10px; border-radius: var(--radius-note); }
+@media (prefers-color-scheme: dark) { .tl-note.warn { color: var(--ink); background: color-mix(in srgb, var(--amber) 16%, transparent); } }
+/* 時間欄固定 3.4em：字放大到它吃掉內容欄時（320px×200%）改疊成上下兩行 */
 @container (max-width: 12em) {
   .tl-row { grid-template-columns: 1fr; }
   .tl-time { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .5em; text-align: left; padding: 0 0 0 var(--sp-4); }
   .tl-time:empty { display: none; }
   .tl-time .t-sub { display: inline; }
+  /* 字放大到內容欄很窄時：地圖／資訊膠囊撐滿欄寬置中（文字本就可折，不會撐破版） */
+  .tl-actions > .btn-map, .tl-actions summary { width: 100%; justify-content: center; }
 }
 /* ===== badges（四重編碼：色×形×字元×標籤） ===== */
 .badge { display: inline-flex; align-items: center; gap: .35em; font-size: .9375rem; font-weight: 600; line-height: 1.3; padding: .35em .7em; border-radius: var(--radius-pill); }
@@ -139,20 +150,25 @@ html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
 @media (prefers-color-scheme: dark) {
   .badge-done, .badge-anchor, .badge-todo { color: #12100D; }
 }
-/* ===== details（摺疊只放補充深度） ===== */
-details.spot { margin: var(--sp-2) 0 0; }
+/* ===== 資訊摺疊：原生 <details>（無 JS 也能開、跨 webview 穩），外觀＝設計稿 [ℹ️ 介紹・電話] 膠囊 ===== */
+/* details 是 .tl-actions 內一般 block 子元素（非 flex item），原生開合最穩、無 JS 也能開；summary＝[ℹ️] 膠囊、面板在其下 */
+details.spot { display: block; margin: 0; }
 details.spot summary {
-  display: inline-flex; align-items: center; min-height: 3rem; padding: .2em .6em .2em 0;
-  cursor: pointer; color: var(--indigo); font-size: .9375rem; font-weight: 600;
+  display: inline-flex; align-items: center; gap: .35em; margin-top: var(--sp-2);
+  min-height: var(--tap); padding: 0 .8em;
+  cursor: pointer; color: var(--indigo); font-size: .8125rem; font-weight: 600;
+  border: 1px solid var(--btn-edge); border-radius: var(--radius-pill);
   list-style: none; touch-action: manipulation;
 }
 details.spot summary::-webkit-details-marker { display: none; }
-details.spot summary::before { content: "▸ "; }
-details.spot[open] summary::before { content: "▾ "; }
-details.spot .spot-body { margin-top: var(--sp-2); padding: var(--sp-3) var(--sp-4); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); font-size: .9375rem; }
+details.spot summary::before { content: "ℹ️"; }
+details.spot .spot-body { margin-top: var(--sp-2); padding: var(--sp-3) var(--sp-4); background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); font-size: .9375rem; line-height: 1.7; }
 details.spot .spot-body p { margin: 0 0 .5em; }
 details.spot .spot-body p:last-child { margin-bottom: 0; }
 details.spot .k { color: var(--ink-2); }
+/* 地圖膠囊一行、資訊膠囊＋面板一行（上下堆疊；原生 details 開合最穩）。無 details 的景點就是單顆地圖膠囊 */
+.tl-actions { margin-top: var(--sp-2); }
+.tl-actions > .btn-map { margin-top: 0; }
 /* ===== buttons ===== */
 .btn {
   display: flex; align-items: center; justify-content: center; gap: .5em;
@@ -168,27 +184,32 @@ details.spot .k { color: var(--ink-2); }
 /* 小判膠囊：地圖連結一律內容寬細線膠囊，完整語意在 aria-label */
 .btn-map {
   display: inline-flex; align-items: center; gap: .4em;
-  min-height: var(--tap); margin-top: var(--sp-1); padding: 0 1.1em;
-  font: inherit; font-size: 1rem; font-weight: 600; text-decoration: none;
+  min-height: var(--tap); margin-top: var(--sp-1); padding: 0 .8em;
+  font: inherit; font-size: .8125rem; font-weight: 600; text-decoration: none;
   color: var(--indigo); background: transparent;
   border: 1px solid var(--btn-edge); border-radius: var(--radius-pill); /* 邊框走 --btn-edge：--line-strong 四種模式皆 <3:1（非文字紅線） */
   touch-action: manipulation;
 }
 .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
 /* ===== 分流雙軌（複線時刻表：分頭/會合＝主軸里程碑，兩軌＝獨立卡片、軌色貫穿縱線） ===== */
-.split { display: grid; gap: var(--sp-4); margin: 0 0 var(--sp-4); }
-.split .track { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 0 var(--sp-4) var(--sp-2); }
+.split { display: grid; gap: var(--sp-5); margin: 0 0 var(--sp-4); }
+.split .track { padding: 0; }
 .split .track-family { --track-c: var(--green); }
 .split .track-solo   { --track-c: var(--indigo); }
-.split .track h4 {
-  margin: 0 calc(-1 * var(--sp-4)) var(--sp-4); padding: var(--sp-2) var(--sp-4);
-  font-size: 1rem; font-weight: 600; color: var(--track-c);
-  background: color-mix(in srgb, var(--track-c) 12%, var(--surface));
-  border-bottom: 1px dashed var(--line-strong);
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-.split .track .tl-body { border-left-color: color-mix(in srgb, var(--track-c) 40%, var(--line)); }
+/* 軌標題留一行細標（帶去向脈絡，且撐無 JS fallback 的可讀性）；不再做整條 tinted 帶 */
+.split .track > h4 { margin: 0 0 var(--sp-3); font-size: .9375rem; font-weight: 600; letter-spacing: .01em; color: var(--track-c); }
+.split .track .tl-body { border-left-color: color-mix(in srgb, var(--track-c) 55%, var(--line)); }
 .split .track .tl-body::before { background: var(--track-c); } /* 與 .tl-row.anchor 同優先權且較後：split 內若放 anchor 卡，靛色錨點會被軌色蓋掉 */
+/* ===== 「看誰的」切換（交接包 1a）：全站同步一個視角，記憶在裝置 ===== */
+/* 有 JS 才只顯示一軌；無 JS 時切換鈕隱藏、兩軌都攤開可讀（高齡＋LINE webview localStorage 不可靠的雙保險） */
+.seg { display: none; }
+html.js .seg { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-4); padding: 5px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); }
+.seg .seg-label { flex: 0 0 auto; padding-left: .5em; font-size: .8125rem; color: var(--ink-2); white-space: nowrap; }
+.seg .seg-row { display: flex; gap: 4px; flex: 1 1 12rem; min-width: 0; }
+.seg-btn { flex: 1; min-width: 0; min-height: 2.6rem; padding: .3em .5em; font: inherit; font-size: .9375rem; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-radius: var(--radius-pill); cursor: pointer; touch-action: manipulation; }
+.seg-btn[aria-current="true"] { background: var(--seg-on-bg); color: var(--seg-on-ink); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
+html.js .split[data-seg-view="solo"] .track-family,
+html.js .split[data-seg-view="family"] .track-solo { display: none; }
 /* 主軸里程碑（分頭/會合）：仿 day-sep 的全寬橫帶 */
 .tl-mile { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sp-2) var(--sp-3); font-weight: 600; font-size: .9375rem; margin: 0 0 var(--sp-4); text-align: center; }
 .tl-mile::before, .tl-mile::after { content: ""; flex: 1; min-width: 1.5em; border-top: 1px solid var(--line-strong); }
@@ -203,7 +224,7 @@ details.spot .k { color: var(--ink-2); }
 .page > h2 { font-size: 1.375rem; margin-bottom: var(--sp-2); }
 .page .page-desc { color: var(--ink-2); font-size: .9375rem; margin: 0 0 var(--sp-4); }
 .bk { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
-.bk li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--sp-3) var(--sp-4); min-width: 0; container-type: inline-size; }
+.bk li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--sp-3) var(--sp-4); min-width: 0; container-type: inline-size; }
 .bk li.hot { border-left: 4px solid var(--accent); }
 .bk li.dropped { opacity: .62; }
 /* 已訂＝低調結案：淡化標題即可。整塊 opacity 會連「✓ 已訂」一起壓到 4.5:1 以下，且子層救不回來 */
@@ -221,7 +242,7 @@ details.spot .k { color: var(--ink-2); }
   .bk .bk-open, .bk .bk-count, .bk .who { white-space: normal; }
 }
 /* ===== info cards ===== */
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--sp-4); margin-bottom: var(--sp-4); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--sp-4); margin-bottom: var(--sp-4); }
 .card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: var(--sp-2); }
 .card p, .card ul { margin: 0 0 .5em; }
 .card ul { padding-left: 1.2em; }
@@ -254,7 +275,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 .tip-line { max-width: 40rem; margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
   display: flex; gap: var(--sp-3); align-items: flex-start;
   background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--indigo);
-  border-radius: var(--radius); font-size: .9375rem; }
+  border-radius: var(--radius-card); font-size: .9375rem; }
 .tip-line[hidden] { display: none; }
 .tip-line .x { margin-left: auto; flex: 0 0 auto; min-width: var(--tap); min-height: var(--tap);
   display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent;
@@ -316,11 +337,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>道頓堀 夜遊</h3></div>
           <p class="tl-note">御好燒／居酒屋晚餐・全程平路</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=道頓堀" aria-label="在 Google 地圖開啟：道頓堀">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>大阪最具代表性的霓虹商店街，固力果跑跑人與章魚燒招牌齊聚，第一晚拉開氣氛剛好。</p>
             <p class="k">建議停留 1.5–2 小時（含晚餐）｜跨年期間部分餐廳休。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=道頓堀" aria-label="在 Google 地圖開啟：道頓堀">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
     </div>
@@ -336,7 +356,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚起：Royal Park 梅小路（check-in）<a href="https://www.google.com/maps/search/?api=1&amp;query=The+Royal+Park+Hotel+Kyoto+Umekoji">🗺️ 地圖</a></div>
     <div class="tl-mile fork">🔀 白天各自行動</div>
     <div class="split">
-      <div class="track track-family">
+      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族（大阪白天・時刻未細排）</h4>
         <div class="tl">
           <article class="tl-row">
@@ -344,11 +365,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>箕面萱野 → 勝尾寺</h3></div>
               <p class="tl-note warn">⚠️ 勝尾寺山路＋階梯多：爸爸視狀況山下休息或走部分區段</p>
-              <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=勝尾寺" aria-label="在 Google 地圖開啟：勝尾寺">🗺️ 地圖・勝尾寺</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
                 <p>勝尾寺：山中佈滿上萬隻紅色達摩娃娃，景色獨特必拍。無大眾運輸直達，箕面萱野轉阪急巴士或計程車約 15 分。</p>
                 <p class="k">建議停留 1.5–2 小時｜箕面萱野＝新站商場，當早餐補給點。</p>
-              </div></details>
-              <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=勝尾寺" aria-label="在 Google 地圖開啟：勝尾寺">🗺️ 地圖・勝尾寺</a>
+              </div></details></div>
             </div>
           </article>
           <article class="tl-row">
@@ -369,7 +389,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </article>
         </div>
       </div>
-      <div class="track track-solo">
+      <div class="track track-solo" data-track="solo">
         <h4>🧍 Bingcian（台北出發）</h4>
         <div class="tl">
           <article class="tl-row" data-t="06:00">
@@ -396,12 +416,11 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>🦉 Owl Cafe Chouette</h3><span class="badge badge-tbd">… 待定</span></div>
           <p class="tl-note">8/25 開放（4 個月前規則）・台灣 8/24 22:55 設鬧鐘卡位・時段抓 ~16:00 後・遲到逾 10 分＝取消</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%B9%B8%E3%81%9B%E3%81%AE%E3%83%95%E3%82%AF%E3%83%AD%E3%82%A6%E3%82%AB%E3%83%95%E3%82%A7Chouette" aria-label="在 Google 地圖開啟：Chouette">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>心斎橋貓頭鷹咖啡（<span lang="ja">幸せのフクロウカフェ</span> Chouette），入退店 1 小時制、每人必點 1 杯飲品。60 分入店料 ¥2,300／2,600＋飲品 ¥500 起。</p>
             <p class="k">預約需登記信用卡；前日取消 50%、當日 100%。定休週一；12/25 照常營業。</p>
             <p><a href="tel:+81662432960">📞 06-6243-2960（+81-6-6243-2960）</a></p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%B9%B8%E3%81%9B%E3%81%AE%E3%83%95%E3%82%AF%E3%83%AD%E3%82%A6%E3%82%AB%E3%83%95%E3%82%A7Chouette" aria-label="在 Google 地圖開啟：Chouette">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <div class="tl-row transit"><div class="tl-time"><time>~17:15</time></div><div class="tl-body"><span class="ico">🚆</span>心斎橋 → 京都（路線隨動線定）</div></div>
@@ -444,10 +463,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>智恩寺＋松葉蟹便當排隊</h3></div>
           <p class="tl-note">柏翰 10:00 去排・11:00 開賣限 50 個</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=智恩寺+天橋立" aria-label="在 Google 地圖開啟：智恩寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>天橋立南端古寺，文殊菩薩信仰中心，扇型御神籤是名物；觀光船碼頭就在旁邊。平地、腹地小。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=智恩寺+天橋立" aria-label="在 Google 地圖開啟：智恩寺">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="10:00">
@@ -455,10 +473,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>⛴️ 觀光船餵海鷗 → 傘松纜車</h3></div>
           <p class="tl-note">週六走 22 分航線・傘松観光券含纜車 約 ¥1,500</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E6%A1%9F%E6%A9%8B" aria-label="在 Google 地圖開啟：觀光船乘船處">🗺️ 地圖・乘船處</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>橫渡阿蘇海、船尾餵海鷗全家都愛；坐船平穩、老少咸宜。年末年始可能減班，行前查時刻表。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E6%A1%9F%E6%A9%8B" aria-label="在 Google 地圖開啟：觀光船乘船處">🗺️ 地圖・乘船處</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="11:30">
@@ -466,11 +483,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>傘松公園（<span lang="ja">股のぞき</span>）</h3></div>
           <p class="tl-note">全程纜車上山・山上平緩・元伊勢籠神社時間夠才加</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=傘松公園" aria-label="在 Google 地圖開啟：傘松公園">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>「<span lang="ja">斜め一文字</span>」最佳俯瞰點，倒看沙洲如天界飛橋，冬季雪景最美。⚠️ 強風纜車有停駛風險。</p>
             <p class="k">元伊勢籠神社（山腳・平地 30 分）：傳說天照大神曾遷祀的「元伊勢」，丹後最高格神社。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=傘松公園" aria-label="在 Google 地圖開啟：傘松公園">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="12:30">
@@ -486,7 +502,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">🚆</span>丹鐵普通車 → 西舞鶴</h3></div>
           <p class="tl-note">坐<strong>右側</strong>：~14:40 過由良川橋梁（神隱少女鐵橋・約 30 秒・拍照節奏要快）</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>由良川橋梁：跨由良川出海口鐵橋（長 552m、水面上 3m），低水位時列車如跨海行駛。12/26 只有青松號＋普通車（黑松停運、赤松週六不跑）。</p>
           </div></details>
         </div>
@@ -518,11 +534,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>清水寺</h3></div>
           <p class="tl-note warn">⚠️ 爸媽：上坡＋階梯；走官方無障礙繞行路線、茶碗坂上山、舞台與茶店可歇</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=清水寺" aria-label="在 Google 地圖開啟：清水寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>懸崖上的「清水の舞台」與音羽の滝，俯瞰京都市街的東山地標，冬日清晨最具靈氣。</p>
             <p class="k">門票 ¥500（現金限定）｜12 月無夜間拝觀｜年末時刻秋季再複查。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=清水寺" aria-label="在 Google 地圖開啟：清水寺">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="09:30">
@@ -530,11 +545,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>三年坂・二年坂 → 八坂塔（外觀）→ 寧寧之道</h3></div>
           <p class="tl-note warn">⚠️ 由上往下走省力・石階多慢慢走・八坂塔不登塔（內梯陡）</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=産寧坂" aria-label="在 Google 地圖開啟：三年坂">🗺️ 地圖・三年坂</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>京都最具代表性的石板古坂串連清水寺到高台寺；八坂塔是京都最上鏡街角，免登塔即是經典畫面；寧寧之道石畳寬緩好走。</p>
             <p class="k">店家約 10:00 開張，9:30 走到正好。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=産寧坂" aria-label="在 Google 地圖開啟：三年坂">🗺️ 地圖・三年坂</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="11:15">
@@ -555,14 +569,15 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row anchor" data-t="14:00">
         <div class="tl-time"><time>14:00</time><span class="t-sub">–~15:00</span></div>
         <div class="tl-body">
+          <div class="anchor-card">
           <div class="tl-head"><h3>知恩院 <span lang="ja">除夜の鐘 試し撞き</span></h3><span class="badge badge-anchor">★ 準時到</span></div>
           <p class="tl-note warn">⚠️ 走緩坡「女坂」（接駁 13:00–14:00 停駛）・免費免預約會限流・前排 13:00 到</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院" aria-label="在 Google 地圖開啟：知恩院">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>日本最大級木造國寶三門的淨土宗總本山；17 名僧侶合撞 70 噸巨鐘的本番彩排，可近距離看。</p>
             <p class="k">禁三腳架/自拍棒/閃光｜2026 官方尚未公告，11–12 月複查官網＋電話。</p>
             <p><a href="tel:+81755312111">📞 075-531-2111（+81-75-531-2111）</a></p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院" aria-label="在 Google 地圖開啟：知恩院">🗺️ 地圖</a>
+          </div></details></div>
+          </div>
         </div>
       </article>
       <article class="tl-row" data-t="15:15">
@@ -570,10 +585,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>下山逛市區：祇園白川・花見小路 → 寺町・新京極</h3></div>
           <p class="tl-note">錦市場 17–18 點收攤不排；改逛開較晚的寺町/新京極/河原町</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=祇園白川" aria-label="在 Google 地圖開啟：祇園白川">🗺️ 地圖・祇園白川</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>石板花街提燈與白川巽橋柳影，傍晚點燈最有氛圍；平路為主。⚠️ 花見小路部分私道禁止攝影。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=祇園白川" aria-label="在 Google 地圖開啟：祇園白川">🗺️ 地圖・祇園白川</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="18:00">
@@ -609,11 +623,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>平等院（鳳凰堂外觀）</h3><span class="badge badge-done">✓ 已定案</span></div>
           <p class="tl-note">只進庭園＋外觀拍照，不取 +¥300 內部券（省排隊）</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=平等院" aria-label="在 Google 地圖開啟：平等院">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>10 圓硬幣上的鳳凰堂本尊，平安佛教美術巔峰的世界遺產。庭園＋鳳翔館平緩、可輪椅。</p>
             <p class="k">門票 ¥700（含鳳翔館）｜庭園 8:45 開｜12/28 照常開放。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=平等院" aria-label="在 Google 地圖開啟：平等院">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="10:00">
@@ -621,11 +634,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>☕ 中村藤吉本店</h3></div>
           <p class="tl-note">10:00 才開・現場抽整理券（不收預約）；替代：辻利兵衛本店（JR 站側）</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97" aria-label="在 Google 地圖開啟：中村藤吉本店">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>1854 年創業的宇治抹茶甜點老舖，本店限定<span lang="ja">生茶ゼリイ</span>與竹筒<span lang="ja">まるとパフェ</span>必點。</p>
             <p class="k">主要負擔是排隊久站，可代為記名候位；官網有即時候位看板。<a href="tel:+81774227800">📞 0774-22-7800（+81-774-22-7800）</a></p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97" aria-label="在 Google 地圖開啟：中村藤吉本店">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="11:30">
@@ -643,7 +655,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
     <div class="tl-mile fork">🔀 午後分頭行動</div>
     <div class="split">
-      <div class="track track-family">
+      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 奈良</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → 奈良</div></div>
@@ -652,10 +665,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>春日大社 ＋ 東大寺</h3></div>
               <p class="tl-note">步行串連・鹿群同框；參道平緩有座椅，爸媽可坐長椅看鹿</p>
-              <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=東大寺" aria-label="在 Google 地圖開啟：東大寺">🗺️ 地圖・東大寺</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
                 <p>春日大社：3000 石燈籠的森林神社。東大寺：日本最大木造建築＋15 公尺大佛（國寶），殿內平地。</p>
-              </div></details>
-              <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=東大寺" aria-label="在 Google 地圖開啟：東大寺">🗺️ 地圖・東大寺</a>
+              </div></details></div>
             </div>
           </article>
           <article class="tl-row">
@@ -667,7 +679,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </article>
         </div>
       </div>
-      <div class="track track-solo">
+      <div class="track track-solo" data-track="solo">
         <h4>🧍 Bingcian → 京都市區</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → JR 京都（午後有快速 ~18–30 分）</div></div>
@@ -711,11 +723,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>貴船神社 本宮・水占卜</h3></div>
           <p class="tl-note warn">⚠️ 爸媽走本宮即可；奧宮/結社視體力與結冰。山區低 3–5°C，穿防滑鞋、多帶保暖層</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=貴船神社" aria-label="在 Google 地圖開啟：貴船神社">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>紅燈籠石階參道是冬季京都明信片畫面，水占卜（¥200）最具代表性；正式參拜序 本宮→奧宮→結社。</p>
             <p class="k">⚠️ 12/29 無點燈（積雪點燈限 1 月中旬後）；川床冬季全休；大雪時 33 巴士可能停駛（行前一週查）。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=貴船神社" aria-label="在 Google 地圖開啟：貴船神社">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="12:00">
@@ -732,10 +743,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>⛩️ 下鴨神社</h3></div>
           <p class="tl-note">出町柳旁・<span lang="ja">糺の森</span>平路・爸媽友善</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社" aria-label="在 Google 地圖開啟：下鴨神社">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>京都最古老神社之一（世界遺產），<span lang="ja">糺の森</span>原始森林宜慢遊；河合神社為「日本第一美麗祈願」神社。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社" aria-label="在 Google 地圖開啟：下鴨神社">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row" data-t="18:00">
@@ -762,7 +772,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚：Royal Park 梅小路（家族續住；Bingcian 退房）</div>
     <div class="tl-mile fork">🔀 全日各自行動</div>
     <div class="split">
-      <div class="track track-family">
+      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 嵐山（草案・細節待排）</h4>
         <div class="tl">
           <article class="tl-row">
@@ -770,16 +781,15 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>嵐山一帶：天龍寺・竹林・渡月橋</h3><span class="badge badge-tbd">… 待定</span></div>
               <p class="tl-note">飯店 JR 嵯峨野線<strong>直達</strong>不用轉車（住宿最大甜蜜點）；候選：金閣寺（原嵐山日行程・次序未定）</p>
-              <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺" aria-label="在 Google 地圖開啟：天龍寺">🗺️ 地圖・天龍寺</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
                 <p>天龍寺：世遺庭園借嵐山景；12/31–1/2 公休，<strong>12/30 仍開放（公休前最後一天）</strong>。北門出去就是竹林步道（平緩）。渡月橋平地可走可坐。</p>
                 <p class="k">嵐山小火車 12/30 起冬季全休 → 已確定不搭。法輪寺階梯多，爸媽略過。</p>
-              </div></details>
-              <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺" aria-label="在 Google 地圖開啟：天龍寺">🗺️ 地圖・天龍寺</a>
+              </div></details></div>
             </div>
           </article>
         </div>
       </div>
-      <div class="track track-solo">
+      <div class="track track-solo" data-track="solo">
         <h4>🧍 Bingcian（返台日・輕裝）</h4>
         <div class="tl">
           <article class="tl-row" data-t="07:30">
@@ -845,10 +855,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>三十三間堂</h3></div>
           <p class="tl-note warn">⚠️ 跨年期間 16:00 收，要提早到；室內平地有座椅，冬日長者友善</p>
-          <details class="spot"><summary>點開看介紹・電話・地址</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=三十三間堂" aria-label="在 Google 地圖開啟：三十三間堂">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
             <p>120 公尺木造正堂內 1001 尊千手觀音列陣，視覺震撼頂級。</p>
-          </div></details>
-          <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=三十三間堂" aria-label="在 Google 地圖開啟：三十三間堂">🗺️ 地圖</a>
+          </div></details></div>
         </div>
       </article>
       <article class="tl-row">
@@ -1031,7 +1040,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 </nav>
 
 <footer>
-  <p>最後更新 2026-07-11・行程仍在調整中，以家族群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
+  <p>最後更新 2026-07-12・行程仍在調整中，以家族群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
 </footer>
 
 <script>
@@ -1049,6 +1058,30 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       });
     }
   } catch (e) {}
+
+  // ===== 「看誰的」切換：全站同步一個視角（家族／Bingcian），記憶在裝置 =====
+  // 無 JS 時 CSS 讓 .seg 隱藏、兩軌都攤開（高齡＋LINE webview localStorage 不可靠的雙保險）
+  (function () {
+    var SEG_KEY = 'kyoto2026:segView';
+    var splits = document.querySelectorAll('.split');
+    var segBtns = document.querySelectorAll('.seg-btn');
+    if (!splits.length) return;
+    function setSeg(v) {
+      v = (v === 'solo') ? 'solo' : 'family'; // 預設全家
+      for (var i = 0; i < splits.length; i++) splits[i].setAttribute('data-seg-view', v);
+      for (var j = 0; j < segBtns.length; j++) segBtns[j].setAttribute('aria-current', String(segBtns[j].getAttribute('data-seg') === v));
+    }
+    var stored = null; try { stored = localStorage.getItem(SEG_KEY); } catch (e) {}
+    setSeg(stored);
+    for (var k = 0; k < segBtns.length; k++) {
+      segBtns[k].addEventListener('click', function () {
+        var v = this.getAttribute('data-seg');
+        setSeg(v);
+        try { localStorage.setItem(SEG_KEY, v); } catch (e) {}
+      });
+    }
+  })();
+
   var TRIP_START = '2026-12-24', TRIP_END = '2027-01-01';
   var days = Array.prototype.slice.call(document.querySelectorAll('.day'));
   var chips = Array.prototype.slice.call(document.querySelectorAll('.daystrip .chip'));
