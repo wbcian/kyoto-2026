@@ -1321,6 +1321,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     var jumpToNow = function () { scrollToNow(true); };
     jumpToNow();
     window.addEventListener('load', jumpToNow, { once: true });
+  } else if (activeDayFromHash()) {
+    // deep link #dN：多數瀏覽器載入會自己定位，這裡補一手（有環境不做 fragment 捲動）；同位置時是 no-op
+    var lt = document.getElementById(activeDayFromHash());
+    if (lt) {
+      var jumpToDay = function () { lt.scrollIntoView({ behavior: 'instant' }); };
+      jumpToDay();
+      window.addEventListener('load', jumpToDay, { once: true });
+    }
   }
 })();
 </script>
