@@ -76,7 +76,7 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 }
 .chip .d { font-weight: 600; white-space: nowrap; }
 .chip .w { font-size: .78em; opacity: .85; white-space: nowrap; }
-.chip.absent { border-style: dashed; opacity: .85; }
+/* .chip.absent 虛線＋淡化樣式暫時取消（2026-07-12 指示：日期不用虛線區分）；markup 保留 class，要恢復加回 border-style:dashed; opacity:.85 */
 .chip[aria-current="true"] { background: var(--night-ink); color: var(--night); border-color: var(--night-ink); }
 /* ===== banner ===== */
 #banner { max-width: 40rem; margin: var(--sp-3) auto 0; padding: 0 var(--sp-4); }
@@ -110,6 +110,9 @@ html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
 .stay-line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2) var(--sp-3); margin: var(--sp-3) 0 var(--sp-4); padding: 9px 13px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); font-size: .8125rem; }
 .stay-line a { font-weight: 600; white-space: nowrap; }
 .draft-note { margin: 0 0 var(--sp-4); padding: var(--sp-3) var(--sp-4); background: transparent; border: 1.5px dashed var(--amber); border-radius: var(--radius); color: var(--amber); font-size: .8125rem; }
+/* 草案期資訊暫時收起（2026-07-12 指示）：草案 chip・草案說明・未參加註記先不顯示；markup 保留，要恢復刪掉下面這行即可。
+   .draft-note 限定 .day 底下：頁頂 noscript 說明共用該 class，不能一起藏 */
+.day-head .chip-draft, .day-head .absent-note, .day .draft-note { display: none; }
 /* ===== timeline ===== */
 /* container query 而非 media query：字級放大時視窗寬度不變，只有容器的 em 數會變小 */
 .tl { margin: 0; container-type: inline-size; }
@@ -279,11 +282,11 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   border: 1px solid var(--btn-edge); border-radius: var(--radius-pill); background: var(--surface); color: var(--indigo);
   font: inherit; font-weight: 600; font-size: 1.0625rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); cursor: pointer; touch-action: manipulation; }
 .fab-now[hidden] { display: none; }
-/* ===== LINE 頁頂提示 ===== */
+/* ===== LINE 頁頂提示（字級・框線對齊 #banner .bn 的一般提醒，不做特別突出） ===== */
 .tip-line { max-width: 40rem; margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
   display: flex; gap: var(--sp-3); align-items: flex-start;
-  background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--indigo);
-  border-radius: var(--radius-card); font-size: .9375rem; }
+  background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-card); font-size: .8125rem; line-height: 1.5; }
 .tip-line[hidden] { display: none; }
 .tip-line .x { margin-left: auto; flex: 0 0 auto; min-width: var(--tap); min-height: var(--tap);
   display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent;
@@ -1195,6 +1198,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     for (var i = 0; i < days.length; i++) {
       if (days[i].getBoundingClientRect().top <= hb + 90) cur = days[i]; else break;
     }
+    // 頁底保底：最後一天（1/1）較短時，捲到底其頂端也進不了判定帶、chip 永遠點不亮——到底就直接判最後一天
+    if (window.innerHeight + window.pageYOffset >= document.documentElement.scrollHeight - 2) cur = days[days.length - 1];
     if (cur) setActiveChip(cur.id);
   }
   window.addEventListener('scroll', function () {
