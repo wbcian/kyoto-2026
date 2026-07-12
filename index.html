@@ -221,7 +221,7 @@ html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height
 /* 有 JS 才只顯示一軌；無 JS 時切換鈕隱藏、兩軌都攤開可讀（高齡＋LINE webview localStorage 不可靠的雙保險） */
 .seg { display: none; }
 html.js .seg { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-4); padding: 5px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); }
-.seg .seg-label { flex: 0 0 auto; padding-left: .5em; font-size: .75rem; color: var(--ink-2); white-space: nowrap; }
+/* 「看誰的」視覺 label 已移除（2026-07-12 指示：不用提示）；語意留在 .seg 的 aria-label */
 .seg .seg-row { display: flex; gap: 4px; flex: 1 1 12rem; min-width: 0; }
 .seg-btn { flex: 1; min-width: 0; min-height: 2.6rem; padding: .3em .5em; font: inherit; font-size: .8125rem; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-radius: var(--radius-pill); cursor: pointer; touch-action: manipulation; }
 .seg-btn[aria-current="true"] { background: var(--seg-on-bg); color: var(--seg-on-ink); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
@@ -372,7 +372,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚起：Royal Park 梅小路（check-in）<a href="https://www.google.com/maps/search/?api=1&amp;query=The+Royal+Park+Hotel+Kyoto+Umekoji">🗺️ 地圖</a></div>
     <div class="tl-mile fork">🔀 白天各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族（大阪白天・時刻未細排）</h4>
         <div class="tl">
@@ -671,7 +671,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
     <div class="tl-mile fork">🔀 午後分頭行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 奈良</h4>
         <div class="tl">
@@ -788,7 +788,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚：Royal Park 梅小路（家族續住；Bingcian 退房）</div>
     <div class="tl-mile fork">🔀 全日各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><span class="seg-label">看誰的</span><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 嵐山（草案・細節待排）</h4>
         <div class="tl">
