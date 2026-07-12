@@ -144,10 +144,10 @@ html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
   .tl-time { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .5em; text-align: left; padding: 0 0 0 var(--sp-4); }
   .tl-time:empty { display: none; }
   .tl-time .t-sub { display: inline; }
-  /* 字放大到內容欄很窄時：膠囊改上下堆疊、撐滿欄寬置中（文字可折，不撐破版） */
+  /* 字放大到內容欄很窄時：連結改上下堆疊（A案文字連結自然換行，不再撐滿置中）；
+     間距用 --sp-5：命中區上下各溢 11px，太小會兩連結命中區互疊 */
   .tl-actions { display: block; }
-  .tl-actions > .btn-map, .tl-actions summary { width: 100%; justify-content: center; }
-  .tl-actions > details.spot { margin-top: var(--sp-2); } /* block 模式無 flex gap，補堆疊間距 */
+  .tl-actions > details.spot { margin-top: var(--sp-5); }
 }
 /* ===== badges（四重編碼：色×形×字元×標籤） ===== */
 .badge { display: inline-flex; align-items: center; gap: .3em; font-size: .71875rem; font-weight: 700; line-height: 1.3; padding: 3px 9px; border-radius: var(--radius-pill); }
@@ -162,11 +162,14 @@ html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
 /* ===== 資訊摺疊：原生 <details>（無 JS 也能開、跨 webview 穩），外觀＝[ℹ️ 介紹] 膠囊（2026-07-12 label 由「介紹・電話」簡化） ===== */
 /* details 是 .tl-actions 內一般 block 子元素（非 flex item），原生開合最穩、無 JS 也能開；summary＝[ℹ️] 膠囊、面板在其下 */
 details.spot { display: block; margin: var(--sp-2) 0 0; } /* 上緣間距放 details（獨立無地圖的景點用）；.tl-actions 內歸零，讓資訊膠囊與地圖膠囊頂端切齊 */
+/* 2026-07-12 A案「去按鈕化」（designer 兩案比較後使用者定案）：膠囊框/白底拿掉，改註腳式點線底文字連結——
+   版面只佔一行字高，命中區用 padding .7rem＋負 margin 撐回 ≥44px（22px 行高＋2×11.2px） */
 details.spot summary {
   display: inline-flex; align-items: center; gap: .35em;
-  min-height: var(--tap); padding: 0 .8em;
+  padding: .7rem .4rem; margin: -.7rem -.4rem;
   cursor: pointer; color: var(--indigo); font-size: .8125rem; font-weight: 600;
-  border: 1px solid var(--btn-edge); border-radius: var(--radius-pill);
+  text-decoration: underline dotted color-mix(in srgb, var(--indigo) 55%, transparent);
+  text-underline-offset: .35em;
   list-style: none; touch-action: manipulation;
 }
 details.spot summary::-webkit-details-marker { display: none; }
@@ -181,7 +184,8 @@ details.spot .k { color: var(--ink-2); }
    JS 量測後用負 margin-left 把 .spot-body 左緣拉回動作列、width 設為列寬（見 script fitSpot）；
    量測前（還沒掛 .fit）面板先壓成 0×0，避免面板內容撐寬 details 盒把膠囊擠去換行。
    無 JS 退回舊行為：整塊 flex-basis:100% 落到下一列全寬（膠囊跟著掉，可接受的降級）。 */
-.tl-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 7px; margin-top: var(--sp-2); }
+/* A案後兩連結 baseline 對齊；row-gap 撐 --sp-5：負 margin 讓命中區上下各溢 11px，換行時 row-gap 太小會兩連結命中區互疊 */
+.tl-actions { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-5) 1.25rem; margin-top: var(--sp-1); }
 .tl-actions > .btn-map, .tl-actions > details.spot { margin-top: 0; }
 html:not(.js) .tl-actions details.spot[open] { flex-basis: 100%; }
 html.js .tl-actions details.spot[open] { min-width: 0; } /* 量測寬度湊整超出半像素時寧可縮 details 盒也不換行（面板寬是 inline style，不受影響） */
@@ -208,6 +212,14 @@ html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height
   touch-action: manipulation;
 }
 .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
+/* 時間軸內的地圖膠囊 → 同款註腳文字連結（A案）；資訊頁 .chips 內維持小判膠囊 */
+.tl .btn-map {
+  min-height: 0; border: 0; background: none;
+  padding: .7rem .4rem; margin: -.7rem -.4rem;
+  text-decoration: underline dotted color-mix(in srgb, var(--indigo) 55%, transparent);
+  text-underline-offset: .35em;
+}
+.tl .btn-map:focus-visible, details.spot summary:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 4px; }
 /* ===== 分流雙軌（複線時刻表：分頭/會合＝主軸里程碑，兩軌＝獨立卡片、軌色貫穿縱線） ===== */
 .split { display: grid; gap: var(--sp-5); margin: 0 0 var(--sp-4); }
 .split .track { padding: 0; }
