@@ -92,8 +92,10 @@ html.js body[data-view="bookings"] #info { display: none; }
 html.js body[data-view="info"] #view-days,
 html.js body[data-view="info"] #bookings { display: none; }
 html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
-/* 日與日的厚帶分界（設計稿 8px #efeadd）；label 式 day-sep 留給無 JS 與節日 */
+/* 日與日的厚帶分界（設計稿 8px #efeadd）；label 式 day-sep 留給無 JS 與節日。
+   第一天不畫：頁頂沒有「日與日」可分，帶子會零間距頂著 banner／LINE 提示卡，看起來像跑版（2026-07-13） */
 html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
+html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; }
 /* ===== 短冊日界線（無 JS 長頁時的日分隔） ===== */
 .day { padding-top: var(--sp-5); }
 .day-sep { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-3); color: var(--ink-2); margin-bottom: var(--sp-4); }
@@ -300,8 +302,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   border: 1px solid var(--btn-edge); border-radius: var(--radius-pill); background: var(--surface); color: var(--indigo);
   font: inherit; font-weight: 600; font-size: 1.0625rem; box-shadow: 0 1px 3px rgba(0,0,0,.12); cursor: pointer; touch-action: manipulation; }
 .fab-now[hidden] { display: none; }
-/* ===== LINE 頁頂提示（字級・框線對齊 #banner .bn 的一般提醒，不做特別突出） ===== */
-.tip-line { max-width: 40rem; margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
+/* ===== LINE 頁頂提示（字級・框線・寬度皆對齊 #banner .bn 的一般提醒，不做特別突出）
+   寬度：#banner 是「外盒 40rem＋水平 padding、卡片在內」，tip 卡自己就是卡片——
+   要同幾何得自算 width/max-width 扣掉兩側 --sp-4，否則窄螢幕上滿版貼齊螢幕邊、比其他卡寬（2026-07-13 跑版回報） ===== */
+.tip-line { width: calc(100% - 2 * var(--sp-4)); max-width: calc(40rem - 2 * var(--sp-4)); margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
   display: flex; gap: var(--sp-3); align-items: flex-start;
   background: var(--surface); border: 1px solid var(--line-strong);
   border-radius: var(--radius-card); font-size: .8125rem; line-height: 1.5; }
@@ -333,7 +337,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 
 <div id="banner"></div>
 <div id="tip-line" class="tip-line" hidden>
-  <span>📱 從 LINE 開啟：點右上「⋯」→「用預設瀏覽器開啟」，再「加入主畫面」，之後從桌面圖示開最順、字也會跟系統放大。</span>
+  <span>📱 從 LINE 開啟：點「⋯」→「用預設瀏覽器開啟」，再「加入主畫面」。</span>
   <button class="x" id="tip-close" type="button" aria-label="關閉提示">✕</button>
 </div>
 <noscript><p class="noscript-note draft-note">此頁不需 JavaScript 也能閱讀：往下捲是 9 天完整行程，最後是「訂票提醒」與「住宿・資訊」。</p></noscript>
@@ -347,10 +351,10 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/24</h2><span class="day-meta">週四 · 第 1 天</span><span class="chip-draft">草案</span></div>
       <p class="theme">抵達大阪</p>
-      <p class="absent-note">🧍 Bingcian 未參加（12/25 下午抵達會合）</p>
+      <p class="absent-note">🧍 謙未參加（12/25 下午抵達會合）</p>
     </header>
     <p class="draft-note">⏳ 本日為草案：依初版行程分析，時刻與細節待柏翰確認後更新。</p>
-    <div class="stay-line">🏨 今晚：溫泉大阪逸之彩酒店 日本橋 <span class="badge badge-done">✓ 哥已訂</span> <span class="kv">・細節待確認</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI">🗺️ 地圖</a></div>
+    <div class="stay-line">🏨 今晚：溫泉大阪逸之彩酒店 日本橋 <span class="badge badge-done">✓ 安已訂</span> <span class="kv">・細節待確認</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI">🗺️ 地圖</a></div>
     <div class="tl">
       <article class="tl-row" data-t="19:10">
         <div class="tl-time"><time>19:10</time></div>
@@ -384,7 +388,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚起：Royal Park 梅小路（check-in）<a href="https://www.google.com/maps/search/?api=1&amp;query=The+Royal+Park+Hotel+Kyoto+Umekoji">🗺️ 地圖</a></div>
     <div class="tl-mile fork">🔀 白天各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族（大阪白天・時刻未細排）</h4>
         <div class="tl">
@@ -418,7 +422,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         </div>
       </div>
       <div class="track track-solo" data-track="solo">
-        <h4>🧍 Bingcian（台北出發）</h4>
+        <h4>🧍 謙（台北出發）</h4>
         <div class="tl">
           <article class="tl-row" data-t="06:00">
             <div class="tl-time"><time>~06:00</time></div>
@@ -633,7 +637,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D5 12/28 ============ -->
-  <section class="day" id="d5" data-date="2026-12-28" data-banner="🚆 08:15 出發往宇治・下午分流（家族→奈良／Bingcian→京都市區）">
+  <section class="day" id="d5" data-date="2026-12-28" data-banner="🚆 08:15 出發往宇治・下午分流（家族→奈良／謙→京都市區）">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/28 一 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/28</h2><span class="day-meta">週一 · 第 5 天</span></div>
@@ -683,7 +687,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
     <div class="tl-mile fork">🔀 午後分頭行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 奈良</h4>
         <div class="tl">
@@ -708,7 +712,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         </div>
       </div>
       <div class="track track-solo" data-track="solo">
-        <h4>🧍 Bingcian → 京都市區</h4>
+        <h4>🧍 謙 → 京都市區</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → JR 京都（午後有快速 ~18–30 分）</div></div>
           <article class="tl-row" data-t="14:00">
@@ -730,7 +734,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D6 12/29 ============ -->
-  <section class="day" id="d6" data-date="2026-12-29" data-banner="🧳 Bingcian 行李早上出門前交櫃台代寄 KIX">
+  <section class="day" id="d6" data-date="2026-12-29" data-banner="🧳 謙行李早上出門前交櫃台代寄 KIX">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/29 二 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/29</h2><span class="day-meta">週二 · 第 6 天</span></div>
@@ -742,7 +746,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>~07:00</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3>起床・打包</h3></div>
-          <p class="tl-note warn">⚠️ Bingcian：行李出門前交飯店櫃台代寄 KIX（cut-off 待向飯店確認）・隨身留 1 晚過夜包</p>
+          <p class="tl-note warn">⚠️ 謙：行李出門前交飯店櫃台代寄 KIX（cut-off 待向飯店確認）・隨身留 1 晚過夜包</p>
         </div>
       </article>
       <div class="tl-row transit"><div class="tl-time"><time>08:00</time></div><div class="tl-body"><span class="ico">🚆</span>飯店出發・門到門 ~1.5h：京都駅 → 出町柳（東福寺轉京阪）→ 叡電 貴船口（¥470）→ 33 巴士 4 分（¥170）→ 步行 5 分</div></div>
@@ -791,16 +795,16 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D7 12/30 ============ -->
-  <section class="day" id="d7" data-date="2026-12-30" data-banner="🚆 Bingcian 11:01 HARUKA 必上（採購硬性截止 09:45）">
+  <section class="day" id="d7" data-date="2026-12-30" data-banner="🚆 謙 11:01 HARUKA 必上（採購硬性截止 09:45）">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/30 三 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/30</h2><span class="day-meta">週三 · 第 7 天</span></div>
-      <p class="theme">分流：Bingcian 返台／家族嵐山</p>
+      <p class="theme">分流：謙返台／家族嵐山</p>
     </header>
-    <div class="stay-line">🏨 今晚：Royal Park 梅小路（家族續住；Bingcian 退房）</div>
+    <div class="stay-line">🏨 今晚：Royal Park 梅小路（家族續住；謙退房）</div>
     <div class="tl-mile fork">🔀 全日各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 全家</button><button type="button" class="seg-btn" data-seg="solo">🧍 我 (Bingcian)</button></div></div>
+      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
         <h4>👨‍👩‍👦 家族 → 嵐山（草案・細節待排）</h4>
         <div class="tl">
@@ -818,7 +822,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         </div>
       </div>
       <div class="track track-solo" data-track="solo">
-        <h4>🧍 Bingcian（返台日・輕裝）</h4>
+        <h4>🧍 謙（返台日・輕裝）</h4>
         <div class="tl">
           <article class="tl-row" data-t="07:30">
             <div class="tl-time"><time>07:30</time></div>
@@ -861,7 +865,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/31</h2><span class="day-meta">週四 · 第 8 天 · 除夕</span><span class="chip-draft">草案</span></div>
       <p class="theme">大晦日・跨年</p>
-      <p class="absent-note">🧍 Bingcian 未參加（12/30 已返台）</p>
+      <p class="absent-note">🧍 謙未參加（12/30 已返台）</p>
     </header>
     <p class="draft-note">⏳ 本日為草案：時刻未定，依行程分析修正建議＋景點索引整理，待柏翰確認。二條城整城公休（12/29–31）已剔除。</p>
     <div class="stay-line">🏨 今晚：Royal Park 梅小路</div>
@@ -917,7 +921,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <header class="day-head">
       <div class="d-row"><h2 class="display">1/1</h2><span class="day-meta">週五 · 第 9 天 · 元旦</span><span class="chip-draft">草案</span></div>
       <p class="theme">元旦初詣 → 回程</p>
-      <p class="absent-note">🧍 Bingcian 未參加（已返台）</p>
+      <p class="absent-note">🧍 謙未參加（已返台）</p>
     </header>
     <p class="draft-note">⏳ 本日為草案：依行程分析修正建議整理（住吉大社 1/1 初詣 230 萬人已建議砍），待柏翰確認。</p>
     <div class="stay-line">🏨 早上：Royal Park 梅小路 退房</div>
@@ -961,8 +965,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   <p class="page-desc">照開放日期排。「▲ 要訂!」＝現在就能動手；訂好後請回報群組，此頁會更新。</p>
   <ul class="bk">
     <li data-open="2026-08-25" data-status="todo">
-      <div class="bk-head"><h3>🦉 Chouette 貓頭鷹咖啡（12/25 會合）</h3><span class="bk-open">8/25 開放</span><span class="bk-count"></span><span class="who">柏翰／Bingcian</span></div>
-      <p class="bk-note">規則「事前予約 <span lang="ja">4カ月前から当日15分前まで</span>」→ 12/25 場 <strong>8/25 開放</strong>（日本）＝台灣 8/24 23:00。<strong>台灣 8/24 22:55 設鬧鐘卡位</strong>（年末熱門）。時段選 <strong>~16:00 以後</strong>避 Bingcian 入境延誤・需登記信用卡。⚠️ 7/6「現在就能訂」已更正。</p>
+      <div class="bk-head"><h3>🦉 Chouette 貓頭鷹咖啡（12/25 會合）</h3><span class="bk-open">8/25 開放</span><span class="bk-count"></span><span class="who">柏翰／謙</span></div>
+      <p class="bk-note">規則「事前予約 <span lang="ja">4カ月前から当日15分前まで</span>」→ 12/25 場 <strong>8/25 開放</strong>（日本）＝台灣 8/24 23:00。<strong>台灣 8/24 22:55 設鬧鐘卡位</strong>（年末熱門）。時段選 <strong>~16:00 以後</strong>避謙入境延誤・需登記信用卡。⚠️ 7/6「現在就能訂」已更正。</p>
     </li>
     <li data-open="2026-11-24" data-status="todo">
       <div class="bk-head"><h3>Hello Kitty HARUKA（12/24 抵達）</h3><span class="bk-open">11/24 開賣</span><span class="bk-count"></span><span class="who">柏翰</span></div>
@@ -973,11 +977,11 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <p class="bk-note">去程 07:20 烏丸口C2 丹海巴士；回程 西舞鶴 <span lang="ja">赤れんが</span>巴士。開放 1 個月前預訂。</p>
     </li>
     <li data-open="2026-11-30" data-status="todo">
-      <div class="bk-head"><h3>HARUKA 12/30 11:01 班（返程）</h3><span class="bk-open">11/30 開賣</span><span class="bk-count"></span><span class="who">Bingcian</span></div>
+      <div class="bk-head"><h3>HARUKA 12/30 11:01 班（返程）</h3><span class="bk-open">11/30 開賣</span><span class="bk-count"></span><span class="who">謙</span></div>
       <p class="bk-note">年末週三可能滿座，建議訂位（自由席為備案）。</p>
     </li>
     <li data-open="2026-12-01" data-status="todo">
-      <div class="bk-head"><h3>仲よし ぼたん鍋（12/29 貴船午餐・5 人）</h3><span class="bk-open">12 月上旬電話</span><span class="bk-count"></span><span class="who">柏翰／Bingcian</span></div>
+      <div class="bk-head"><h3>仲よし ぼたん鍋（12/29 貴船午餐・5 人）</h3><span class="bk-open">12 月上旬電話</span><span class="bk-count"></span><span class="who">柏翰／謙</span></div>
       <p class="bk-note">提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（+81-75-741-2000）</a>。<span lang="ja">ひろ文</span>年末 12/21–1/3 全休，別家沒得換。</p>
     </li>
     <li data-status="todo">
@@ -1018,9 +1022,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
   </div>
   <div class="card">
-    <h3>12/24 晚・大阪住宿 <span class="badge badge-done">✓ 哥已訂</span></h3>
+    <h3>12/24 晚・大阪住宿 <span class="badge badge-done">✓ 安已訂</span></h3>
     <p>溫泉大阪逸之彩酒店 日本橋（Hot spring OSAKA HINODE HOTEL NIPPONBASHI）</p>
-    <p class="kv">雙床房含 2 份早餐——與 12/24 入住名單/晚數是否相符，待哥與柏翰確認。</p>
+    <p class="kv">雙床房含 2 份早餐——與 12/24 入住名單/晚數是否相符，待安與柏翰確認。</p>
     <div class="chips"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI" aria-label="在 Google 地圖開啟：大阪逸之彩酒店">🗺️ 地圖</a></div>
   </div>
   <div class="card">
@@ -1028,14 +1032,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <ul>
       <li>家族去程：12/24（四）19:10 抵 KIX（草案・待柏翰確認）</li>
       <li>家族回程：1/1（五）20:10 KIX 起飛（草案・待柏翰確認）</li>
-      <li>Bingcian：CI152 12/25 09:45 台北 → 13:20 KIX｜CI153 12/30 14:30 KIX → 16:45 台北</li>
+      <li>謙：CI152 12/25 09:45 台北 → 13:20 KIX｜CI153 12/30 14:30 KIX → 16:45 台北</li>
     </ul>
   </div>
   <div class="card">
     <h3>👥 成員與參加區間</h3>
     <ul>
-      <li>哥・柏翰・爸爸・媽媽：12/24 – 1/1 全程 9 天</li>
-      <li>Bingcian：12/25 下午 – 12/30 中午（12/25 心斎橋會合・12/30 先行返台）</li>
+      <li>安・柏翰・爸爸・媽媽：12/24 – 1/1 全程 9 天</li>
+      <li>謙：12/25 下午 – 12/30 中午（12/25 心斎橋會合・12/30 先行返台）</li>
     </ul>
   </div>
   <div class="card">
@@ -1068,7 +1072,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 </nav>
 
 <footer>
-  <p>最後更新 2026-07-12・行程仍在調整中，以家族群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
+  <p>最後更新 2026-07-13・行程仍在調整中，以家族群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
 </footer>
 
 <script>
@@ -1087,7 +1091,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     }
   } catch (e) {}
 
-  // ===== 「看誰的」切換：全站同步一個視角（家族／Bingcian），記憶在裝置 =====
+  // ===== 「看誰的」切換：全站同步一個視角（家族／謙），記憶在裝置 =====
   // 無 JS 時 CSS 讓 .seg 隱藏、兩軌都攤開（高齡＋LINE webview localStorage 不可靠的雙保險）
   (function () {
     var SEG_KEY = 'kyoto2026:segView';
