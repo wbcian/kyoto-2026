@@ -159,7 +159,7 @@ html.js body[data-view="days"] .day { border-top: 8px solid var(--band); }
 @media (prefers-color-scheme: dark) {
   .badge-done, .badge-anchor, .badge-todo { color: #12100D; }
 }
-/* ===== 資訊摺疊：原生 <details>（無 JS 也能開、跨 webview 穩），外觀＝設計稿 [ℹ️ 介紹・電話] 膠囊 ===== */
+/* ===== 資訊摺疊：原生 <details>（無 JS 也能開、跨 webview 穩），外觀＝[ℹ️ 介紹] 膠囊（2026-07-12 label 由「介紹・電話」簡化） ===== */
 /* details 是 .tl-actions 內一般 block 子元素（非 flex item），原生開合最穩、無 JS 也能開；summary＝[ℹ️] 膠囊、面板在其下 */
 details.spot { display: block; margin: var(--sp-2) 0 0; } /* 上緣間距放 details（獨立無地圖的景點用）；.tl-actions 內歸零，讓資訊膠囊與地圖膠囊頂端切齊 */
 details.spot summary {
@@ -176,10 +176,16 @@ details.spot .spot-body p { margin: 0 0 .5em; }
 details.spot .spot-body p:last-child { margin-bottom: 0; }
 details.spot .k { color: var(--ink-2); }
 /* 地圖＋資訊膠囊同列（設計稿 action row）。details 是一般 block flex item（原生開合跨 webview 穩；
-   前一版踩雷的是 display:contents，flex child 沒這問題）；開啟時 flex-basis:100% → 整塊落到下一列全寬 */
+   前一版踩雷的是 display:contents，flex child 沒這問題）。
+   開啟時要「膠囊留在原位＋面板全寬」：面板是 details 的子元素，純 CSS 讓面板寬度脫離 details 盒做不到——
+   JS 量測後用負 margin-left 把 .spot-body 左緣拉回動作列、width 設為列寬（見 script fitSpot）；
+   量測前（還沒掛 .fit）面板先壓成 0×0，避免面板內容撐寬 details 盒把膠囊擠去換行。
+   無 JS 退回舊行為：整塊 flex-basis:100% 落到下一列全寬（膠囊跟著掉，可接受的降級）。 */
 .tl-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 7px; margin-top: var(--sp-2); }
 .tl-actions > .btn-map, .tl-actions > details.spot { margin-top: 0; }
-.tl-actions details.spot[open] { flex-basis: 100%; }
+html:not(.js) .tl-actions details.spot[open] { flex-basis: 100%; }
+html.js .tl-actions details.spot[open] { min-width: 0; } /* 量測寬度湊整超出半像素時寧可縮 details 盒也不換行（面板寬是 inline style，不受影響） */
+html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height: 0; margin: 0; padding: 0; border: 0; overflow: hidden; }
 /* ===== buttons ===== */
 .btn {
   display: flex; align-items: center; justify-content: center; gap: .5em;
@@ -347,7 +353,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>道頓堀 夜遊</h3></div>
           <p class="tl-note">御好燒／居酒屋晚餐・全程平路</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=道頓堀" aria-label="在 Google 地圖開啟：道頓堀">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=道頓堀" aria-label="在 Google 地圖開啟：道頓堀">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>大阪最具代表性的霓虹商店街，固力果跑跑人與章魚燒招牌齊聚，第一晚拉開氣氛剛好。</p>
             <p class="k">建議停留 1.5–2 小時（含晚餐）｜跨年期間部分餐廳休。</p>
           </div></details></div>
@@ -375,7 +381,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>箕面萱野 → 勝尾寺</h3></div>
               <p class="tl-note warn">⚠️ 勝尾寺山路＋階梯多：爸爸視狀況山下休息或走部分區段</p>
-              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=勝尾寺" aria-label="在 Google 地圖開啟：勝尾寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=勝尾寺" aria-label="在 Google 地圖開啟：勝尾寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>勝尾寺：山中佈滿上萬隻紅色達摩娃娃，景色獨特必拍。無大眾運輸直達，箕面萱野轉阪急巴士或計程車約 15 分。</p>
                 <p class="k">建議停留 1.5–2 小時｜箕面萱野＝新站商場，當早餐補給點。</p>
               </div></details></div>
@@ -426,7 +432,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>🦉 Owl Cafe Chouette</h3><span class="badge badge-tbd">… 待定</span></div>
           <p class="tl-note">8/25 開放（4 個月前規則）・台灣 8/24 22:55 設鬧鐘卡位・時段抓 ~16:00 後・遲到逾 10 分＝取消</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%B9%B8%E3%81%9B%E3%81%AE%E3%83%95%E3%82%AF%E3%83%AD%E3%82%A6%E3%82%AB%E3%83%95%E3%82%A7Chouette" aria-label="在 Google 地圖開啟：Chouette">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%B9%B8%E3%81%9B%E3%81%AE%E3%83%95%E3%82%AF%E3%83%AD%E3%82%A6%E3%82%AB%E3%83%95%E3%82%A7Chouette" aria-label="在 Google 地圖開啟：Chouette">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>心斎橋貓頭鷹咖啡（<span lang="ja">幸せのフクロウカフェ</span> Chouette），入退店 1 小時制、每人必點 1 杯飲品。60 分入店料 ¥2,300／2,600＋飲品 ¥500 起。</p>
             <p class="k">預約需登記信用卡；前日取消 50%、當日 100%。定休週一；12/25 照常營業。</p>
             <p><a href="tel:+81662432960">📞 06-6243-2960（+81-6-6243-2960）</a></p>
@@ -473,7 +479,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>智恩寺＋松葉蟹便當排隊</h3></div>
           <p class="tl-note">柏翰 10:00 去排・11:00 開賣限 50 個</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=智恩寺+天橋立" aria-label="在 Google 地圖開啟：智恩寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=智恩寺+天橋立" aria-label="在 Google 地圖開啟：智恩寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>天橋立南端古寺，文殊菩薩信仰中心，扇型御神籤是名物；觀光船碼頭就在旁邊。平地、腹地小。</p>
           </div></details></div>
         </div>
@@ -483,7 +489,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>⛴️ 觀光船餵海鷗 → 傘松纜車</h3></div>
           <p class="tl-note">週六走 22 分航線・傘松観光券含纜車 約 ¥1,500</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E6%A1%9F%E6%A9%8B" aria-label="在 Google 地圖開啟：觀光船乘船處">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E6%A1%9F%E6%A9%8B" aria-label="在 Google 地圖開啟：觀光船乘船處">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>橫渡阿蘇海、船尾餵海鷗全家都愛；坐船平穩、老少咸宜。年末年始可能減班，行前查時刻表。</p>
           </div></details></div>
         </div>
@@ -493,7 +499,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>傘松公園（<span lang="ja">股のぞき</span>）</h3></div>
           <p class="tl-note">全程纜車上山・山上平緩・元伊勢籠神社時間夠才加</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=傘松公園" aria-label="在 Google 地圖開啟：傘松公園">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=傘松公園" aria-label="在 Google 地圖開啟：傘松公園">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>「<span lang="ja">斜め一文字</span>」最佳俯瞰點，倒看沙洲如天界飛橋，冬季雪景最美。⚠️ 強風纜車有停駛風險。</p>
             <p class="k">元伊勢籠神社（山腳・平地 30 分）：傳說天照大神曾遷祀的「元伊勢」，丹後最高格神社。</p>
           </div></details></div>
@@ -512,7 +518,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">🚆</span>丹鐵普通車 → 西舞鶴</h3></div>
           <p class="tl-note">坐<strong>右側</strong>：~14:40 過由良川橋梁（神隱少女鐵橋・約 30 秒・拍照節奏要快）</p>
-          <details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>由良川橋梁：跨由良川出海口鐵橋（長 552m、水面上 3m），低水位時列車如跨海行駛。12/26 只有青松號＋普通車（黑松停運、赤松週六不跑）。</p>
           </div></details>
         </div>
@@ -544,7 +550,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>清水寺</h3></div>
           <p class="tl-note warn">⚠️ 爸媽：上坡＋階梯；走官方無障礙繞行路線、茶碗坂上山、舞台與茶店可歇</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=清水寺" aria-label="在 Google 地圖開啟：清水寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=清水寺" aria-label="在 Google 地圖開啟：清水寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>懸崖上的「清水の舞台」與音羽の滝，俯瞰京都市街的東山地標，冬日清晨最具靈氣。</p>
             <p class="k">門票 ¥500（現金限定）｜12 月無夜間拝觀｜年末時刻秋季再複查。</p>
           </div></details></div>
@@ -555,7 +561,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>三年坂・二年坂 → 八坂塔（外觀）→ 寧寧之道</h3></div>
           <p class="tl-note warn">⚠️ 由上往下走省力・石階多慢慢走・八坂塔不登塔（內梯陡）</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=産寧坂" aria-label="在 Google 地圖開啟：三年坂">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=産寧坂" aria-label="在 Google 地圖開啟：三年坂">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>京都最具代表性的石板古坂串連清水寺到高台寺；八坂塔是京都最上鏡街角，免登塔即是經典畫面；寧寧之道石畳寬緩好走。</p>
             <p class="k">店家約 10:00 開張，9:30 走到正好。</p>
           </div></details></div>
@@ -582,7 +588,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <div class="anchor-card">
           <div class="tl-head"><h3>知恩院 <span lang="ja">除夜の鐘 試し撞き</span></h3><span class="badge badge-anchor">★ 準時到</span></div>
           <p class="tl-note warn">⚠️ 走緩坡「女坂」（接駁 13:00–14:00 停駛）・免費免預約會限流・前排 13:00 到</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院" aria-label="在 Google 地圖開啟：知恩院">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院" aria-label="在 Google 地圖開啟：知恩院">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>日本最大級木造國寶三門的淨土宗總本山；17 名僧侶合撞 70 噸巨鐘的本番彩排，可近距離看。</p>
             <p class="k">禁三腳架/自拍棒/閃光｜2026 官方尚未公告，11–12 月複查官網＋電話。</p>
             <p><a href="tel:+81755312111">📞 075-531-2111（+81-75-531-2111）</a></p>
@@ -595,7 +601,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>下山逛市區：祇園白川・花見小路 → 寺町・新京極</h3></div>
           <p class="tl-note">錦市場 17–18 點收攤不排；改逛開較晚的寺町/新京極/河原町</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=祇園白川" aria-label="在 Google 地圖開啟：祇園白川">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=祇園白川" aria-label="在 Google 地圖開啟：祇園白川">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>石板花街提燈與白川巽橋柳影，傍晚點燈最有氛圍；平路為主。⚠️ 花見小路部分私道禁止攝影。</p>
           </div></details></div>
         </div>
@@ -633,7 +639,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>平等院（鳳凰堂外觀）</h3><span class="badge badge-done">✓ 已定案</span></div>
           <p class="tl-note">只進庭園＋外觀拍照，不取 +¥300 內部券（省排隊）</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=平等院" aria-label="在 Google 地圖開啟：平等院">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=平等院" aria-label="在 Google 地圖開啟：平等院">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>10 圓硬幣上的鳳凰堂本尊，平安佛教美術巔峰的世界遺產。庭園＋鳳翔館平緩、可輪椅。</p>
             <p class="k">門票 ¥700（含鳳翔館）｜庭園 8:45 開｜12/28 照常開放。</p>
           </div></details></div>
@@ -644,7 +650,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>☕ 中村藤吉本店</h3></div>
           <p class="tl-note">10:00 才開・現場抽整理券（不收預約）；替代：辻利兵衛本店（JR 站側）</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97" aria-label="在 Google 地圖開啟：中村藤吉本店">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%AD%E6%9D%91%E8%97%A4%E5%90%89%E6%9C%AC%E5%BA%97%20%E5%AE%87%E6%B2%BB%E6%9C%AC%E5%BA%97" aria-label="在 Google 地圖開啟：中村藤吉本店">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>1854 年創業的宇治抹茶甜點老舖，本店限定<span lang="ja">生茶ゼリイ</span>與竹筒<span lang="ja">まるとパフェ</span>必點。</p>
             <p class="k">主要負擔是排隊久站，可代為記名候位；官網有即時候位看板。<a href="tel:+81774227800">📞 0774-22-7800（+81-774-22-7800）</a></p>
           </div></details></div>
@@ -675,7 +681,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>春日大社 ＋ 東大寺</h3></div>
               <p class="tl-note">步行串連・鹿群同框；參道平緩有座椅，爸媽可坐長椅看鹿</p>
-              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=東大寺" aria-label="在 Google 地圖開啟：東大寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=東大寺" aria-label="在 Google 地圖開啟：東大寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>春日大社：3000 石燈籠的森林神社。東大寺：日本最大木造建築＋15 公尺大佛（國寶），殿內平地。</p>
               </div></details></div>
             </div>
@@ -733,7 +739,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>貴船神社 本宮・水占卜</h3></div>
           <p class="tl-note warn">⚠️ 爸媽走本宮即可；奧宮/結社視體力與結冰。山區低 3–5°C，穿防滑鞋、多帶保暖層</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=貴船神社" aria-label="在 Google 地圖開啟：貴船神社">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=貴船神社" aria-label="在 Google 地圖開啟：貴船神社">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>紅燈籠石階參道是冬季京都明信片畫面，水占卜（¥200）最具代表性；正式參拜序 本宮→奧宮→結社。</p>
             <p class="k">⚠️ 12/29 無點燈（積雪點燈限 1 月中旬後）；川床冬季全休；大雪時 33 巴士可能停駛（行前一週查）。</p>
           </div></details></div>
@@ -753,7 +759,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>⛩️ 下鴨神社</h3></div>
           <p class="tl-note">出町柳旁・<span lang="ja">糺の森</span>平路・爸媽友善</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社" aria-label="在 Google 地圖開啟：下鴨神社">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社" aria-label="在 Google 地圖開啟：下鴨神社">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>京都最古老神社之一（世界遺產），<span lang="ja">糺の森</span>原始森林宜慢遊；河合神社為「日本第一美麗祈願」神社。</p>
           </div></details></div>
         </div>
@@ -791,7 +797,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
             <div class="tl-body">
               <div class="tl-head"><h3>嵐山一帶：天龍寺・竹林・渡月橋</h3><span class="badge badge-tbd">… 待定</span></div>
               <p class="tl-note">飯店 JR 嵯峨野線<strong>直達</strong>不用轉車（住宿最大甜蜜點）；候選：金閣寺（原嵐山日行程・次序未定）</p>
-              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺" aria-label="在 Google 地圖開啟：天龍寺">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+              <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺" aria-label="在 Google 地圖開啟：天龍寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>天龍寺：世遺庭園借嵐山景；12/31–1/2 公休，<strong>12/30 仍開放（公休前最後一天）</strong>。北門出去就是竹林步道（平緩）。渡月橋平地可走可坐。</p>
                 <p class="k">嵐山小火車 12/30 起冬季全休 → 已確定不搭。法輪寺階梯多，爸媽略過。</p>
               </div></details></div>
@@ -865,7 +871,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-body">
           <div class="tl-head"><h3>三十三間堂</h3></div>
           <p class="tl-note warn">⚠️ 跨年期間 16:00 收，要提早到；室內平地有座椅，冬日長者友善</p>
-          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=三十三間堂" aria-label="在 Google 地圖開啟：三十三間堂">🗺️ 地圖</a><details class="spot"><summary>介紹・電話</summary><div class="spot-body">
+          <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=三十三間堂" aria-label="在 Google 地圖開啟：三十三間堂">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>120 公尺木造正堂內 1001 尊千手觀音列陣，視覺震撼頂級。</p>
           </div></details></div>
         </div>
@@ -1090,6 +1096,38 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         try { localStorage.setItem(SEG_KEY, v); } catch (e) {}
       });
     }
+  })();
+
+  // ===== 介紹面板全寬但膠囊不掉行 =====
+  // 面板（.spot-body）是 details 的子元素：開啟時若靠 flex-basis:100% 讓面板全寬，整個 details（含膠囊）會掉到下一列。
+  // 改為 details 留在原位（膠囊不動），量測後用負 margin-left 把面板左緣拉回動作列、width 設為列寬；
+  // 開啟瞬間面板被 CSS 壓成 0×0（.fit 掛上前），所以量到的 details 位置就是膠囊原位，不會被面板內容擠跑。
+  // 字放大的堆疊模式（container query 改 display:block）下 details 左緣＝列左緣，shift 自然為 0，同一條公式通用。
+  (function () {
+    var spots = Array.prototype.slice.call(document.querySelectorAll('.tl-actions > details.spot'));
+    if (!spots.length) return;
+    function fitSpot(d) {
+      var body = d.querySelector('.spot-body');
+      if (!body) return;
+      body.classList.remove('fit'); body.style.marginLeft = ''; body.style.width = ''; // 先還原成 0×0 再量，避免沿用上次位移
+      if (!d.open) return;
+      var ar = d.parentNode.getBoundingClientRect();
+      var shift = d.getBoundingClientRect().left - ar.left;
+      body.style.marginLeft = -shift + 'px';
+      body.style.width = ar.width + 'px';
+      body.classList.add('fit');
+    }
+    spots.forEach(function (d) {
+      d.addEventListener('toggle', function () { fitSpot(d); });
+    });
+    // 轉向／字級改變會動到列寬：開著的面板重新量一次。
+    // offsetParent guard：被「看誰的」藏起來的軌（display:none）量到的全是 0，跳過、保留原 inline 值，
+    // 切回來時 viewport 多半沒變仍正確；回前景再補一次（iOS 去設定改字級回來的情形）
+    function refitOpen() {
+      spots.forEach(function (d) { if (d.open && d.offsetParent) fitSpot(d); });
+    }
+    window.addEventListener('resize', refitOpen);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) refitOpen(); });
   })();
 
   var TRIP_START = '2026-12-24', TRIP_END = '2027-01-01';
