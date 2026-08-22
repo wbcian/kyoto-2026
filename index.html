@@ -6,7 +6,13 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#FBF7EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#191714" media="(prefers-color-scheme: dark)">
-<title>京都跨年 2026｜家族行程</title>
+<meta name="apple-mobile-web-app-title" content="京都跨年">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>京都跨年 2026｜全體行程</title>
 <style>
 /* ===== tokens（懷紙上的時刻表：紙・墨・線・四狀態色） ===== */
 :root {
@@ -91,6 +97,15 @@ html.js body[data-view="bookings"] #view-days,
 html.js body[data-view="bookings"] #info { display: none; }
 html.js body[data-view="info"] #view-days,
 html.js body[data-view="info"] #bookings { display: none; }
+/* 日期導覽與當日重點只屬於行程頁；訂票／住宿頁保留品牌列即可。 */
+html.js body[data-view="bookings"] .daystrip,
+html.js body[data-view="bookings"] #banner,
+html.js body[data-view="bookings"] #btn-today,
+html.js body[data-view="bookings"] #fab-now,
+html.js body[data-view="info"] .daystrip,
+html.js body[data-view="info"] #banner,
+html.js body[data-view="info"] #btn-today,
+html.js body[data-view="info"] #fab-now { display: none; }
 html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
 /* 日與日的厚帶分界（設計稿 8px #efeadd）；label 式 day-sep 留給無 JS 與節日。
    第一天不畫：頁頂沒有「日與日」可分，帶子會零間距頂著 banner／LINE 提示卡，看起來像跑版（2026-07-13） */
@@ -346,21 +361,21 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 <section id="view-days">
 
   <!-- ============ D1 12/24 ============ -->
-  <section class="day" id="d1" data-date="2026-12-24" data-banner="✈️ 19:10 抵 KIX・HARUKA 進大阪（草案・待柏翰確認）">
+  <section class="day" id="d1" data-date="2026-12-24" data-banner="✈️ 19:10 抵 KIX・HARUKA 進大阪（草案・待確認）">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/24 四 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/24</h2><span class="day-meta">週四 · 第 1 天</span><span class="chip-draft">草案</span></div>
       <p class="theme">抵達大阪</p>
       <p class="absent-note">🧍 謙未參加（12/25 下午抵達會合）</p>
     </header>
-    <p class="draft-note">⏳ 本日為草案：依初版行程分析，時刻與細節待柏翰確認後更新。</p>
+    <p class="draft-note">⏳ 本日為草案：依初版行程分析，時刻與細節待確認後更新。</p>
     <div class="stay-line">🏨 今晚：溫泉大阪逸之彩酒店 日本橋 <span class="badge badge-done">✓ 安已訂</span> <span class="kv">・細節待確認</span><a href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI">🗺️ 地圖</a></div>
     <div class="tl">
       <article class="tl-row" data-t="19:10">
         <div class="tl-time"><time>19:10</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3><span class="ico">✈️</span>抵達關西機場 KIX</h3></div>
-          <p class="tl-note">家族先發組（名單／航班待柏翰確認）</p>
+          <p class="tl-note">先發組（名單／航班待確認）</p>
         </div>
       </article>
       <div class="tl-row transit"><div class="tl-time"></div><div class="tl-body"><span class="ico">🚆</span>HARUKA（Hello Kitty 塗裝）→ 大阪 <span class="badge badge-todo">▲ 要訂!</span> 11/24 開賣</div></div>
@@ -390,13 +405,12 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="split">
       <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
-        <h4>👨‍👩‍👦 家族（大阪白天・時刻未細排）</h4>
+        <h4>👨‍👩‍👦 柏安&amp;爸媽（大阪白天・時刻未細排）</h4>
         <div class="tl">
           <article class="tl-row">
             <div class="tl-time"><span class="t">上午</span></div>
             <div class="tl-body">
               <div class="tl-head"><h3>箕面萱野 → 勝尾寺</h3></div>
-              <p class="tl-note warn">⚠️ 勝尾寺山路＋階梯多：爸爸視狀況山下休息或走部分區段</p>
               <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=勝尾寺" aria-label="在 Google 地圖開啟：勝尾寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>勝尾寺：山中佈滿上萬隻紅色達摩娃娃，景色獨特必拍。無大眾運輸直達，箕面萱野轉阪急巴士或計程車約 15 分。</p>
                 <p class="k">建議停留 1.5–2 小時｜箕面萱野＝新站商場，當早餐補給點。</p>
@@ -494,7 +508,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>09:30</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3>智恩寺＋松葉蟹便當排隊</h3></div>
-          <p class="tl-note">柏翰 10:00 去排・11:00 開賣限 50 個</p>
+          <p class="tl-note">10:00 一起去排隊・11:00 開賣限 50 個</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=智恩寺+天橋立" aria-label="在 Google 地圖開啟：智恩寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>天橋立南端古寺，文殊菩薩信仰中心，扇型御神籤是名物；觀光船碼頭就在旁邊。平地、腹地小。</p>
           </div></details></div>
@@ -506,7 +520,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           <div class="tl-head"><h3>⛴️ 觀光船餵海鷗 → 傘松纜車</h3></div>
           <p class="tl-note">週六走 22 分航線・傘松観光券含纜車 約 ¥1,500</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E6%A9%8B%E7%AB%8B%E6%A1%9F%E6%A9%8B" aria-label="在 Google 地圖開啟：觀光船乘船處">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
-            <p>橫渡阿蘇海、船尾餵海鷗全家都愛；坐船平穩、老少咸宜。年末年始可能減班，行前查時刻表。</p>
+            <p>橫渡阿蘇海、船尾餵海鷗適合全體；坐船平穩、老少咸宜。年末年始可能減班，行前查時刻表。</p>
           </div></details></div>
         </div>
       </article>
@@ -548,11 +562,11 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D4 12/27 ============ -->
-  <section class="day" id="d4" data-date="2026-12-27" data-banner="★ 14:00 知恩院敲鐘（13:00 卡位・不可動）">
+  <section class="day" id="d4" data-date="2026-12-27" data-banner="★ 知恩院敲鐘：日本時間 14:00（台灣 13:00；日本時間 13:00 卡位）・不可動">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/27 日 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/27</h2><span class="day-meta">週日 · 第 4 天</span></div>
-      <p class="theme">東山深度 ★（知恩院 14:00 敲鐘・要準時到）</p>
+      <p class="theme">東山深度 ★（知恩院 日本時間 14:00 敲鐘・要準時到）</p>
     </header>
     <div class="stay-line">🏨 今晚：Royal Park 梅小路</div>
     <div class="tl">
@@ -560,12 +574,12 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>~06:45</time></div>
         <div class="tl-body"><div class="tl-head"><h3>起床（折衷・不衝空景）</h3></div></div>
       </article>
-      <div class="tl-row transit"><div class="tl-time"><time>07:15</time></div><div class="tl-body"><span class="ico">🚌</span>步行 7 分至七条大宮 → 市巴士 207 →「五条坂/清水道」下車＋上坡步行 10–12 分（5 人不搭計程車；早班 207 班少時計程車 2 台為備案）</div></div>
+      <div class="tl-row transit"><div class="tl-time"><time>07:15</time></div><div class="tl-body"><span class="ico">🚌</span>步行 7 分至七条大宮 → 市巴士 207 →「五条坂/清水道」下車＋上坡步行 10–12 分（早班 207 班少時計程車 2 台為備案）</div></div>
       <article class="tl-row" data-t="08:00">
         <div class="tl-time"><time>08:00</time><span class="t-sub">–09:30</span></div>
         <div class="tl-body">
           <div class="tl-head"><h3>清水寺</h3></div>
-          <p class="tl-note warn">⚠️ 爸媽：上坡＋階梯；走官方無障礙繞行路線、茶碗坂上山、舞台與茶店可歇</p>
+          <p class="tl-note warn">⚠️ 上坡＋階梯；官方無障礙繞行路線與茶碗坂可減少負擔，舞台與茶店可休息</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=清水寺" aria-label="在 Google 地圖開啟：清水寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>懸崖上的「清水の舞台」與音羽の滝，俯瞰京都市街的東山地標，冬日清晨最具靈氣。</p>
             <p class="k">門票 ¥500（現金限定）｜12 月無夜間拝觀｜年末時刻秋季再複查。</p>
@@ -593,17 +607,17 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <article class="tl-row" data-t="12:30">
         <div class="tl-time"><time>12:30</time></div>
         <div class="tl-body">
-          <div class="tl-head"><h3>八阪神社 → 圓山公園 → 13:00 知恩院卡位</h3></div>
+          <div class="tl-head"><h3>八阪神社 → 圓山公園 → 日本時間 13:00 知恩院卡位</h3></div>
           <p class="tl-note warn">⚠️ 從圓山公園側（東）平路進，避西樓門石段；公園長椅茶店可歇</p>
           <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=八坂神社" aria-label="在 Google 地圖開啟：八阪神社">🗺️ 地圖</a>
         </div>
       </article>
       <article class="tl-row anchor" data-t="14:00">
-        <div class="tl-time"><time>14:00</time><span class="t-sub">–~15:00</span></div>
+        <div class="tl-time"><time>14:00</time><span class="t-sub">–~15:00</span><span class="t-sub">日本時間</span></div>
         <div class="tl-body">
           <div class="anchor-card">
-          <div class="tl-head"><h3>知恩院 <span lang="ja">除夜の鐘 試し撞き</span></h3><span class="badge badge-anchor">★ 準時到</span></div>
-          <p class="tl-note warn">⚠️ 走緩坡「女坂」（接駁 13:00–14:00 停駛）・免費免預約會限流・前排 13:00 到</p>
+          <div class="tl-head"><h3>知恩院 <span lang="ja">除夜の鐘 試し撞き</span></h3><span class="badge badge-anchor">🇯🇵 日本時間 JST</span><span class="badge badge-anchor">★ 準時到</span></div>
+          <p class="tl-note warn">⚠️ 日本時間 14:00 開始（台灣 13:00）・走緩坡「女坂」（接駁日本時間 13:00–14:00 停駛）・免費免預約會限流・前排請於日本時間 13:00 到</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=知恩院" aria-label="在 Google 地圖開啟：知恩院">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>日本最大級木造國寶三門的淨土宗總本山；17 名僧侶合撞 70 噸巨鐘的本番彩排，可近距離看。</p>
             <p class="k">禁三腳架/自拍棒/閃光｜2026 官方尚未公告，11–12 月複查官網＋電話。</p>
@@ -637,7 +651,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D5 12/28 ============ -->
-  <section class="day" id="d5" data-date="2026-12-28" data-banner="🚆 08:15 出發往宇治・下午分流（家族→奈良／謙→京都市區）">
+  <section class="day" id="d5" data-date="2026-12-28" data-banner="🚆 08:15 出發往宇治・下午分流（柏安&amp;爸媽→奈良／謙→京都或大阪市區，依晚餐地點）">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/28 一 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/28</h2><span class="day-meta">週一 · 第 5 天</span></div>
@@ -689,14 +703,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="split">
       <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
-        <h4>👨‍👩‍👦 家族 → 奈良</h4>
+        <h4>👨‍👩‍👦 柏安&amp;爸媽 → 奈良</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → 奈良</div></div>
           <article class="tl-row">
             <div class="tl-time"><span class="t">下午</span></div>
             <div class="tl-body">
               <div class="tl-head"><h3>春日大社 ＋ 東大寺</h3></div>
-              <p class="tl-note">步行串連・鹿群同框；參道平緩有座椅，爸媽可坐長椅看鹿</p>
+              <p class="tl-note">步行串連・鹿群同框；參道平緩有座椅，可坐長椅休息看鹿</p>
               <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=東大寺" aria-label="在 Google 地圖開啟：東大寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>春日大社：3000 石燈籠的森林神社。東大寺：日本最大木造建築＋15 公尺大佛（國寶），殿內平地。</p>
               </div></details></div>
@@ -712,25 +726,25 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         </div>
       </div>
       <div class="track track-solo" data-track="solo">
-        <h4>🧍 謙 → 京都市區</h4>
+        <h4>🧍 謙 → 京都／大阪市區（依晚餐地點）</h4>
         <div class="tl">
-          <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → JR 京都（午後有快速 ~18–30 分）</div></div>
+          <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → 京都／大阪市區（路線待晚餐地點確認）</div></div>
           <article class="tl-row" data-t="14:00">
             <div class="tl-time"><time>14:00</time></div>
             <div class="tl-body">
               <div class="tl-head"><h3>🆓 市區自由逛街・採購</h3></div>
-              <p class="tl-note">寺町・新京極・河原町・京都駅周邊（整個下午私人時間，採購主力時段）</p>
+              <p class="tl-note">下午自由行程；目的地依晚餐地點決定</p>
             </div>
           </article>
           <article class="tl-row" data-t="18:30">
             <div class="tl-time"><time>18:30</time></div>
             <div class="tl-body"><div class="tl-head"><h3><span class="ico">🍽️</span>晚餐</h3></div>
-            <p class="tl-note">傾向留京都市區；集合點（大阪 vs 京都）待議</p></div>
+            <p class="tl-note">晚餐地點與集合點（大阪／京都）待議</p></div>
           </article>
         </div>
       </div>
     </div>
-    <div class="tl-mile rejoin">🤝 晚上會合（大阪 vs 京都）<span class="badge badge-tbd">… 待定</span></div>
+    <div class="tl-mile rejoin">🤝 晚上會合地點（大阪／京都）<span class="badge badge-tbd">… 待定</span></div>
   </section>
 
   <!-- ============ D6 12/29 ============ -->
@@ -738,7 +752,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/29 二 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/29</h2><span class="day-meta">週二 · 第 6 天</span></div>
-      <p class="theme">全家貴船全日 ★（悠閒不縱走）→ 下鴨神社</p>
+      <p class="theme">全體貴船全日 ★（悠閒不縱走）→ 下鴨神社</p>
     </header>
     <div class="stay-line">🏨 今晚：Royal Park 梅小路</div>
     <div class="tl">
@@ -754,7 +768,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>09:35</time></div>
         <div class="tl-body">
           <div class="tl-head"><h3>貴船神社 本宮・水占卜</h3></div>
-          <p class="tl-note warn">⚠️ 爸媽走本宮即可；奧宮/結社視體力與結冰。山區低 3–5°C，穿防滑鞋、多帶保暖層</p>
+          <p class="tl-note warn">⚠️ 山區低 3–5°C，穿防滑鞋、多帶保暖層</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=貴船神社" aria-label="在 Google 地圖開啟：貴船神社">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>紅燈籠石階參道是冬季京都明信片畫面，水占卜（¥200）最具代表性；正式參拜序 本宮→奧宮→結社。</p>
             <p class="k">⚠️ 12/29 無點燈（積雪點燈限 1 月中旬後）；川床冬季全休；大雪時 33 巴士可能停駛（行前一週查）。</p>
@@ -774,7 +788,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><time>~14:30</time><span class="t-sub">~1h</span></div>
         <div class="tl-body">
           <div class="tl-head"><h3>⛩️ 下鴨神社</h3></div>
-          <p class="tl-note">出町柳旁・<span lang="ja">糺の森</span>平路・爸媽友善</p>
+          <p class="tl-note">出町柳旁・<span lang="ja">糺の森</span>平路・適合慢走</p>
           <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=下鴨神社" aria-label="在 Google 地圖開啟：下鴨神社">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
             <p>京都最古老神社之一（世界遺產），<span lang="ja">糺の森</span>原始森林宜慢遊；河合神社為「日本第一美麗祈願」神社。</p>
           </div></details></div>
@@ -799,14 +813,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 12/30 三 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">12/30</h2><span class="day-meta">週三 · 第 7 天</span></div>
-      <p class="theme">分流：謙返台／家族嵐山</p>
+      <p class="theme">分流：謙返台／柏安&amp;爸媽嵐山</p>
     </header>
-    <div class="stay-line">🏨 今晚：Royal Park 梅小路（家族續住；謙退房）</div>
+    <div class="stay-line">🏨 今晚：Royal Park 梅小路（柏安&amp;爸媽續住；謙退房）</div>
     <div class="tl-mile fork">🔀 全日各自行動</div>
     <div class="split">
       <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
       <div class="track track-family" data-track="family">
-        <h4>👨‍👩‍👦 家族 → 嵐山（草案・細節待排）</h4>
+        <h4>👨‍👩‍👦 柏安&amp;爸媽 → 嵐山（草案・細節待排）</h4>
         <div class="tl">
           <article class="tl-row">
             <div class="tl-time"><span class="t">全日</span></div>
@@ -815,7 +829,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
               <p class="tl-note">飯店 JR 嵯峨野線<strong>直達</strong>不用轉車（住宿最大甜蜜點）；候選：金閣寺（原嵐山日行程・次序未定）</p>
               <div class="tl-actions"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=天龍寺" aria-label="在 Google 地圖開啟：天龍寺">🗺️ 地圖</a><details class="spot"><summary>介紹</summary><div class="spot-body">
                 <p>天龍寺：世遺庭園借嵐山景；12/31–1/2 公休，<strong>12/30 仍開放（公休前最後一天）</strong>。北門出去就是竹林步道（平緩）。渡月橋平地可走可坐。</p>
-                <p class="k">嵐山小火車 12/30 起冬季全休 → 已確定不搭。法輪寺階梯多，爸媽略過。</p>
+                <p class="k">嵐山小火車 12/30 起冬季全休 → 當日無法搭乘。</p>
               </div></details></div>
             </div>
           </article>
@@ -867,7 +881,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <p class="theme">大晦日・跨年</p>
       <p class="absent-note">🧍 謙未參加（12/30 已返台）</p>
     </header>
-    <p class="draft-note">⏳ 本日為草案：時刻未定，依行程分析修正建議＋景點索引整理，待柏翰確認。二條城整城公休（12/29–31）已剔除。</p>
+    <p class="draft-note">⏳ 本日為草案：時刻未定，依行程分析修正建議＋景點索引整理，待確認。二條城整城公休（12/29–31）已剔除。</p>
     <div class="stay-line">🏨 今晚：Royal Park 梅小路</div>
     <div class="tl">
       <article class="tl-row">
@@ -908,7 +922,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         <div class="tl-time"><span class="t">深夜</span></div>
         <div class="tl-body">
           <div class="tl-head"><h3>八阪神社 <span lang="ja">をけら詣り</span></h3><span class="badge badge-opt">🔸 備選</span></div>
-          <p class="tl-note warn">19:30 起通宵；⚠️ 大晦日 ~23:00 起境內封閉管制、四条通極擠——長者不熬夜，年輕人自由參加</p>
+          <p class="tl-note warn">19:30 起通宵；⚠️ 大晦日 ~23:00 起境內封閉管制、四条通極擠</p>
           <a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=八坂神社" aria-label="在 Google 地圖開啟：八阪神社">🗺️ 地圖</a>
         </div>
       </article>
@@ -916,14 +930,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   </section>
 
   <!-- ============ D9 1/1 ============ -->
-  <section class="day holiday" id="d9" data-date="2027-01-01" data-banner="✈️ 20:10 回程起飛（家族）">
+  <section class="day holiday" id="d9" data-date="2027-01-01" data-banner="✈️ 20:10 柏安&amp;爸媽回程起飛">
     <div class="day-sep" aria-hidden="true"><span class="lbl">—— 1/1 五 元日 ——</span></div>
     <header class="day-head">
       <div class="d-row"><h2 class="display">1/1</h2><span class="day-meta">週五 · 第 9 天 · 元旦</span><span class="chip-draft">草案</span></div>
       <p class="theme">元旦初詣 → 回程</p>
       <p class="absent-note">🧍 謙未參加（已返台）</p>
     </header>
-    <p class="draft-note">⏳ 本日為草案：依行程分析修正建議整理（住吉大社 1/1 初詣 230 萬人已建議砍），待柏翰確認。</p>
+    <p class="draft-note">⏳ 本日為草案：依行程分析修正建議整理（住吉大社 1/1 初詣 230 萬人已建議砍），待確認。</p>
     <div class="stay-line">🏨 早上：Royal Park 梅小路 退房</div>
     <div class="tl">
       <article class="tl-row">
@@ -965,15 +979,15 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   <p class="page-desc">照開放日期排。「▲ 要訂!」＝現在就能動手；訂好後請回報群組，此頁會更新。</p>
   <ul class="bk">
     <li data-open="2026-08-25" data-status="todo">
-      <div class="bk-head"><h3>🦉 Chouette 貓頭鷹咖啡（12/25 會合）</h3><span class="bk-open">8/25 開放</span><span class="bk-count"></span><span class="who">柏翰／謙</span></div>
+      <div class="bk-head"><h3>🦉 Chouette 貓頭鷹咖啡（12/25 會合）</h3><span class="bk-open">8/25 開放</span><span class="bk-count"></span><span class="who">柏安／謙</span></div>
       <p class="bk-note">規則「事前予約 <span lang="ja">4カ月前から当日15分前まで</span>」→ 12/25 場 <strong>8/25 開放</strong>（日本）＝台灣 8/24 23:00。<strong>台灣 8/24 22:55 設鬧鐘卡位</strong>（年末熱門）。時段選 <strong>~16:00 以後</strong>避謙入境延誤・需登記信用卡。⚠️ 7/6「現在就能訂」已更正。</p>
     </li>
     <li data-open="2026-11-24" data-status="todo">
-      <div class="bk-head"><h3>Hello Kitty HARUKA（12/24 抵達）</h3><span class="bk-open">11/24 開賣</span><span class="bk-count"></span><span class="who">柏翰</span></div>
+      <div class="bk-head"><h3>Hello Kitty HARUKA（12/24 抵達）</h3><span class="bk-open">11/24 開賣</span><span class="bk-count"></span><span class="who">柏安</span></div>
       <p class="bk-note">日本時間 11/24 早上 10:00（台灣 9:00）・JR-WEST ONLINE 官方網站。</p>
     </li>
     <li data-open="2026-11-26" data-status="todo">
-      <div class="bk-head"><h3>京都 ⇄ 天橋立 高速巴士 去＋回（12/26・5 人）</h3><span class="bk-open">11/26 開賣</span><span class="bk-count"></span><span class="who">柏翰</span></div>
+      <div class="bk-head"><h3>京都 ⇄ 天橋立 高速巴士 去＋回（12/26・5 人）</h3><span class="bk-open">11/26 開賣</span><span class="bk-count"></span><span class="who">柏安</span></div>
       <p class="bk-note">去程 07:20 烏丸口C2 丹海巴士；回程 西舞鶴 <span lang="ja">赤れんが</span>巴士。開放 1 個月前預訂。</p>
     </li>
     <li data-open="2026-11-30" data-status="todo">
@@ -981,24 +995,24 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <p class="bk-note">年末週三可能滿座，建議訂位（自由席為備案）。</p>
     </li>
     <li data-open="2026-12-01" data-status="todo">
-      <div class="bk-head"><h3>仲よし ぼたん鍋（12/29 貴船午餐・5 人）</h3><span class="bk-open">12 月上旬電話</span><span class="bk-count"></span><span class="who">柏翰／謙</span></div>
+      <div class="bk-head"><h3>仲よし ぼたん鍋（12/29 貴船午餐・5 人）</h3><span class="bk-open">12 月上旬電話</span><span class="bk-count"></span><span class="who">柏安／謙</span></div>
       <p class="bk-note">提前 2–4 週電話預約 <a href="tel:+81757412000">📞 075-741-2000（+81-75-741-2000）</a>。<span lang="ja">ひろ文</span>年末 12/21–1/3 全休，別家沒得換。</p>
     </li>
     <li data-status="todo">
-      <div class="bk-head"><h3>志ぐれ（12/27 晚餐・5 人個室）</h3><span class="bk-open">2026 秋電話確認</span><span class="bk-count"></span><span class="who">柏翰</span></div>
+      <div class="bk-head"><h3>志ぐれ（12/27 晚餐・5 人個室）</h3><span class="bk-open">2026 秋電話確認</span><span class="bk-count"></span><span class="who">柏安</span></div>
       <p class="bk-note">確認 5 人椅子個室＋12/27 年末營業後訂位 <a href="tel:+815054860593">📞 050-5486-0593（+81-50-5486-0593）</a>。</p>
     </li>
     <li data-status="onsite">
-      <div class="bk-head"><h3>鞍馬貴船一日券（12/29・全家）</h3><span class="bk-open">當天現場買</span><span class="who">全家</span></div>
+      <div class="bk-head"><h3>鞍馬貴船一日券（12/29・全體）</h3><span class="bk-open">當天現場買</span><span class="who">全體</span></div>
       <p class="bk-note">出町柳站購買 ¥1,200/人（含叡山電車）。</p>
     </li>
     <li data-status="option">
-      <div class="bk-head"><h3>玄品河豚 祇園（12/27）</h3><span class="badge badge-opt">🔸 備選</span><span class="who">柏翰</span></div>
+      <div class="bk-head"><h3>玄品河豚 祇園（12/27）</h3><span class="badge badge-opt">🔸 備選</span><span class="who">柏安</span></div>
       <p class="bk-note">敲鐘後若 17:00 開店又有空再去（walk-in 不保證）；要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（+81-75-531-5815）</a>。</p>
     </li>
     <li class="dropped" data-status="dropped">
-      <div class="bk-head"><h3>嵐山小火車</h3><span class="bk-open">不需要・已放掉</span></div>
-      <p class="bk-note">6/27 定案家族不堅持；12/30 起冬季全休，家族嵐山日（12/30）本來就搭不到。</p>
+      <div class="bk-head"><h3>嵐山小火車</h3><span class="bk-open">當日停駛</span></div>
+      <p class="bk-note">12/30 起冬季全休，當日無法搭乘。</p>
     </li>
   </ul>
 </section>
@@ -1024,14 +1038,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   <div class="card">
     <h3>12/24 晚・大阪住宿 <span class="badge badge-done">✓ 安已訂</span></h3>
     <p>溫泉大阪逸之彩酒店 日本橋（Hot spring OSAKA HINODE HOTEL NIPPONBASHI）</p>
-    <p class="kv">雙床房含 2 份早餐——與 12/24 入住名單/晚數是否相符，待安與柏翰確認。</p>
+    <p class="kv">雙床房含 2 份早餐——與 12/24 入住名單／晚數是否相符，待確認。</p>
     <div class="chips"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hot+spring+OSAKA+HINODE+HOTEL+NIPPONBASHI" aria-label="在 Google 地圖開啟：大阪逸之彩酒店">🗺️ 地圖</a></div>
   </div>
   <div class="card">
     <h3>✈️ 航班</h3>
     <ul>
-      <li>家族去程：12/24（四）19:10 抵 KIX（草案・待柏翰確認）</li>
-      <li>家族回程：1/1（五）20:10 KIX 起飛（草案・待柏翰確認）</li>
+      <li>先發組去程：12/24（四）19:10 抵 KIX（草案・待確認）</li>
+      <li>柏安&amp;爸媽回程：1/1（五）20:10 KIX 起飛（草案・待確認）</li>
       <li>謙：CI152 12/25 09:45 台北 → 13:20 KIX｜CI153 12/30 14:30 KIX → 16:45 台北</li>
     </ul>
   </div>
@@ -1072,7 +1086,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 </nav>
 
 <footer>
-  <p>最後更新 2026-07-13・行程仍在調整中，以家族群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
+  <p>最後更新 2026-08-22・行程仍在調整中，以群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
 </footer>
 
 <script>
@@ -1091,7 +1105,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     }
   } catch (e) {}
 
-  // ===== 「看誰的」切換：全站同步一個視角（家族／謙），記憶在裝置 =====
+  // ===== 「看誰的」切換：全站同步一個視角（柏安＆爸媽／謙），記憶在裝置 =====
   // 無 JS 時 CSS 讓 .seg 隱藏、兩軌都攤開（高齡＋LINE webview localStorage 不可靠的雙保險）
   (function () {
     var SEG_KEY = 'kyoto2026:segView';
@@ -1099,7 +1113,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     var segBtns = document.querySelectorAll('.seg-btn');
     if (!splits.length) return;
     function setSeg(v) {
-      v = (v === 'solo') ? 'solo' : 'family'; // 預設全家
+      v = (v === 'solo') ? 'solo' : 'family'; // 預設柏安＆爸媽
       for (var i = 0; i < splits.length; i++) splits[i].setAttribute('data-seg-view', v);
       for (var j = 0; j < segBtns.length; j++) segBtns[j].setAttribute('aria-current', String(segBtns[j].getAttribute('data-seg') === v));
     }

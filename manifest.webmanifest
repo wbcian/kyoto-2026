@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "京都跨年 2026–27",
+  "short_name": "京都跨年",
+  "description": "京都跨年全體行程、訂票提醒與住宿資訊",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FBF7EF",
+  "theme_color": "#1B2440",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
