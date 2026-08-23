@@ -1232,12 +1232,13 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     if (todaySec) return todaySec.id;
     return 'd1';
   }
-  // 行程頁＝9 天連續長卷軸（設計稿捲動模型）：chip 是原生 anchor（scroll-margin-top 抵銷 sticky header），
+  // 行程頁＝9 天連續長卷軸（設計稿捲動模型）：chip 保留 anchor 作無 JS fallback；
+  // JS 模式攔截點擊，只執行一次受控捲動，避免 iOS WebKit 的原生 fragment＋scrollIntoView 雙重捲動。
   // 現用日由 scroll spy 回寫 date rail；.day 不再做單日 display 切換
   var lastView = null;
   var rail = document.querySelector('.daystrip');
   var lastActiveId = null;
-  function revealActiveChip(chip, center) {
+  function revealActiveChip(chip, center, instant) {
     var rr = rail.getBoundingClientRect();
     var cr = chip.getBoundingClientRect();
     var pad = 16;
@@ -1251,9 +1252,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     } else {
       return;
     }
-    rail.scrollTo({ left: Math.max(0, left), behavior: REDUCED ? 'instant' : 'smooth' });
+    rail.scrollTo({ left: Math.max(0, left), behavior: (instant || REDUCED) ? 'instant' : 'smooth' });
   }
-  function setActiveChip(id, centerRail) {
+  function setActiveChip(id, centerRail, instantRail) {
     var href = '#' + id, curChip = null;
     var changed = id !== lastActiveId;
     chips.forEach(function (c) {
@@ -1264,7 +1265,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     if (changed) { lastActiveId = id; tabs.days.setAttribute('href', href); }
     // 點日期／切回行程時置中；scroll spy 只在 active 日期離開可視範圍時移動最小距離。
     // 只捲 daystrip 本身，不對 sticky 內的 chip 呼叫 scrollIntoView，避免把主視窗拉回頁頂。
-    if ((centerRail || changed) && curChip) revealActiveChip(curChip, !!centerRail);
+    if ((centerRail || changed) && curChip) revealActiveChip(curChip, !!centerRail, !!instantRail);
   }
   function render() {
     var h = location.hash;
@@ -1297,9 +1298,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   // 700ms 未到位就 instant 補跳；reduced-motion 一律 instant；seq 讓連點時舊保險絲失效
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fuseSeq = 0;
-  function smoothTo(el, block) {
+  var pendingDayScroll = null;
+  function smoothTo(el, block, done) {
     block = block || 'start';
-    if (REDUCED) { el.scrollIntoView({ behavior: 'instant', block: block }); return; }
+    if (REDUCED) {
+      el.scrollIntoView({ behavior: 'instant', block: block });
+      if (done) done();
+      return;
+    }
     var seq = ++fuseSeq;
     el.scrollIntoView({ behavior: 'smooth', block: block });
     setTimeout(function () {
@@ -1309,10 +1315,12 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
         ? (r.top > 0 && r.top < window.innerHeight * .7)
         : (Math.abs(r.top - topEl.getBoundingClientRect().bottom) < 160);
       if (!arrived) el.scrollIntoView({ behavior: 'instant', block: block });
+      if (done) done();
     }, 700);
   }
   var spyRaf = null;
   function spyPick() {
+    if (pendingDayScroll) return; // 日期跳轉途中不要讓經過的日期重寫 active chip／啟動橫向動畫
     var hb = topEl.getBoundingClientRect().bottom; // sticky＝header 高；200% 靜態捲離後為負，仍正確
     var cur = days[0];
     for (var i = 0; i < days.length; i++) {
@@ -1392,6 +1400,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   var pendingNow = false;
   function goNow() {
     if (!todaySec) return;
+    pendingDayScroll = null;
     if (document.body.getAttribute('data-view') !== 'days') { pendingNow = true; location.hash = '#' + todaySec.id; return; }
     setActiveChip(todaySec.id, true); // 先寫（語意即「今天」）：rail 置中要在啟動平滑捲動前，寫在後會取消動畫
     placeNowLine();
@@ -1401,6 +1410,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   fabNow.addEventListener('click', goNow);
 
   window.addEventListener('hashchange', function () {
+    pendingDayScroll = null;
+    fuseSeq++; // 取消尚未完成的日期跳轉保險絲；新目的地若需平滑捲動會取得新的 seq
     var prevView = lastView;
     render(); // 同步：data-view 已生效，且瀏覽器的 fragment 跳轉早於本 handler
     if (document.body.getAttribute('data-view') !== 'days') { window.scrollTo({ top: 0, behavior: 'instant' }); return; } // 兩參數 scrollTo 會吃 CSS smooth，切頁要 instant
@@ -1422,12 +1433,24 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     }
   });
 
-  // 點「目前所在日」的 chip 不會觸發 hashchange，補一個跳回該日頂端
+  // 日期 chip 統一走單一路徑：阻止原生 fragment 捲動，先更新 URL／active chip，再只做一次垂直捲動。
+  // 日期列立即置中，且捲動完成前暫停 scroll spy，避免 iOS WebKit 同時重繪 sticky header 與兩個 scroll container。
   chips.forEach(function (c) {
-    c.addEventListener('click', function () {
-      if (location.hash !== c.getAttribute('href')) return; // 不同日交給 hashchange
-      var t = document.getElementById(c.getAttribute('href').slice(1));
-      if (t) smoothTo(t);
+    c.addEventListener('click', function (event) {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      var href = c.getAttribute('href');
+      var id = href.slice(1);
+      var t = document.getElementById(id);
+      if (!t) return;
+      event.preventDefault();
+      if (location.hash !== href) history.pushState(null, '', href);
+      pendingDayScroll = id;
+      setActiveChip(id, true, true);
+      smoothTo(t, 'start', function () {
+        if (pendingDayScroll !== id) return;
+        pendingDayScroll = null;
+        spyPick();
+      });
     });
   });
 
