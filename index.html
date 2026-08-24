@@ -312,7 +312,12 @@ html.js .split[data-seg-view="family"] .track-solo { display: none; }
 .tabbar a .em { font-size: 1.1875rem; line-height: 1; }
 .tabbar a[aria-current="true"] { color: var(--indigo); font-weight: 600; box-shadow: inset 0 2px 0 var(--indigo); }
 /* ===== footer ===== */
-footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) var(--sp-5); color: var(--ink-2); font-size: .71875rem; line-height: 1.7; }
+/* footer 是文件最後一個元素，底部留白要讓開固定的 .tabbar——與 main 同一個 7rem。
+   原本只給 --sp-5，捲到底時尾行會被導覽列蓋住（2026-08-24 加版本戳時量出來的既有問題）。 */
+footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) 7rem; color: var(--ink-2); font-size: .71875rem; line-height: 1.7; }
+/* 這份 HTML 自己的版本時間（JS 填）。無 JS 時是空的，:empty 讓它不佔 margin——同 .bk-count 的處理 */
+footer .build { margin-top: var(--sp-2); font-variant-numeric: tabular-nums; }
+footer .build:empty { display: none; }
 .noscript-note { max-width: var(--wrap); margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4); }
 /* ===== 浮動「今」鈕 ===== */
 .fab-now { position: fixed; right: var(--sp-4); bottom: calc(4.2rem + env(safe-area-inset-bottom)); z-index: 25;
@@ -1125,6 +1130,7 @@ footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp
 
 <footer>
   <p>最後更新 2026-08-23・行程仍在調整中，以群組最新討論為準。<br>時刻含「~」者為估值；⏳ 標記＝尚未定案。</p>
+  <p class="build"></p>
 </footer>
 
 <script>
@@ -1152,6 +1158,20 @@ footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp
     var drift = anchor.getBoundingClientRect().top - top0;
     if (drift) window.scrollBy({ top: drift, left: 0, behavior: 'instant' });
   }
+
+  // 頁尾標出「手上這份 HTML 是什麼時候的」。加到主畫面的 PWA 會抱著舊快照不放，
+  // 而這頁沒有 service worker 可以管更新，出問題時很難判斷是程式沒修好還是根本沒拿到新版。
+  // 用 document.lastModified（伺服器的 Last-Modified）而不是寫死的字串：寫死的遲早忘記更新，
+  // 到時候顯示的版本比實際還舊，比沒有更糟。這個值永遠等於瀏覽器真正載入的那份。
+  (function () {
+    var el = document.querySelector('footer .build');
+    if (!el) return;
+    var d = new Date(document.lastModified);
+    if (isNaN(d.getTime())) return;
+    function p2(n) { return (n < 10 ? '0' : '') + n; }
+    el.textContent = '程式版本 ' + d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()) +
+                     ' ' + p2(d.getHours()) + ':' + p2(d.getMinutes());
+  })();
 
   var tip = document.getElementById('tip-line');
   if (tip && lsGet('hideLineTip') !== '1') {
