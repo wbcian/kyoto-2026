@@ -49,7 +49,7 @@ body {
 }
 .display { font-family: var(--font-serif); }
 main { max-width: 40rem; width: 100%; margin-inline: auto; padding: 0 var(--sp-4) 7rem; }
-section[id] { scroll-margin-top: 9rem; } /* sticky header（brand+rail ≈ 8.5rem）＋ 8px 帶 */
+section[id] { scroll-margin-top: 9rem; } /* fixed header（brand+rail ≈ 8.5rem）＋ 8px 帶 */
 h1,h2,h3,h4 { line-height: 1.35; margin: 0; }
 a { color: var(--indigo); }
 a[href^="tel:"] { display: inline-flex; align-items: center; min-height: var(--tap); padding: .4em .6em; font-weight: 600; }
@@ -58,8 +58,15 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 .ico { display: inline-block; width: 1.4em; text-align: center; }
 /* ===== header（鉄紺夜色帶＋雪輪） ===== */
 .top { position: static; z-index: 30; background: var(--night); color: var(--night-ink); box-shadow: 0 1px 3px rgba(0,0,0,.15); }
-/* 視窗夠高（相對字級）才吸頂：字放大 200% 時改為隨頁捲動，不吃掉半個螢幕 */
-@media (min-height: 34em) { .top { position: sticky; top: 0; } }
+/* 視窗夠高（相對字級）才釘在頂：字放大 200% 時改為隨頁捲動，不吃掉半個螢幕 */
+/* 用 fixed 不用 sticky：iOS WebKit 對 sticky 的位移是「捲動提交後再套用」，長距離瞬移捲動
+   （點日期 chip）之後會有 1–2 幀還沒套用，那幾幀 header 畫在文件流原位＝畫面外，看起來就是
+   整條日期列閃一下不見（2026-08-24 手機錄影逐幀確認）。fixed 由 UI 端固定在視窗上，沒有這段時間差。
+   fixed 不佔版面，高度改由 --top-h 撐開（JS 量測；無 JS 時退回 8.5rem，與 scroll-margin-top 的 9rem 同一組假設）。 */
+@media (min-height: 34em) {
+  .top { position: fixed; top: 0; left: 0; right: 0; }
+  body { padding-top: var(--top-h, 8.5rem); }
+}
 .brand { display: flex; flex-wrap: wrap; row-gap: var(--sp-2); align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4) var(--sp-2); max-width: 40rem; margin-inline: auto; position: relative; }
 .brand h1 { font-size: 1.1875rem; font-weight: 600; letter-spacing: .04em; }
 .brand h1 .yr { font-size: .78em; opacity: .8; font-weight: 500; margin-left: .35em; }
@@ -1264,7 +1271,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     });
     if (changed) { lastActiveId = id; tabs.days.setAttribute('href', href); }
     // 點日期／切回行程時置中；scroll spy 只在 active 日期離開可視範圍時移動最小距離。
-    // 只捲 daystrip 本身，不對 sticky 內的 chip 呼叫 scrollIntoView，避免把主視窗拉回頁頂。
+    // 只捲 daystrip 本身，不對 header 內的 chip 呼叫 scrollIntoView，避免把主視窗拉回頁頂。
     if ((centerRail || changed) && curChip) revealActiveChip(curChip, !!centerRail, !!instantRail);
   }
   function render() {
@@ -1291,9 +1298,17 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     }
     banner.innerHTML = msg;
   }
-  // scroll spy：取「區塊頂已進到 sticky header 下緣 +90px 內」的最後一天（rAF 節流；
+  // scroll spy：取「區塊頂已進到 header 下緣 +90px 內」的最後一天（rAF 節流；
   // 捲動中必有 frame，rAF 在此可靠——不可靠的是無捲動的背景分頁，那時也不會有 scroll 事件）
   var topEl = document.querySelector('.top');
+  // header 是 fixed（見 CSS 註解），不佔版面，高度要自己回填給 body padding。
+  // 會變高的情形：〔今天〕鈕出現／消失、品牌列換行、iOS 動態字級改變、轉向。
+  function syncTopHeight() {
+    document.documentElement.style.setProperty('--top-h', topEl.offsetHeight + 'px');
+  }
+  syncTopHeight();
+  if (window.ResizeObserver) new ResizeObserver(syncTopHeight).observe(topEl);
+  else window.addEventListener('resize', syncTopHeight);
   // 平滑捲動＋保險絲：部分環境（省電模式/webview/系統停用動畫）smooth 會 no-op 或被取消——
   // 700ms 未到位就 instant 補跳；reduced-motion 一律 instant；seq 讓連點時舊保險絲失效
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1321,7 +1336,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   var spyRaf = null;
   function spyPick() {
     if (pendingDayScroll) return; // 日期跳轉途中不要讓經過的日期重寫 active chip／啟動橫向動畫
-    var hb = topEl.getBoundingClientRect().bottom; // sticky＝header 高；200% 靜態捲離後為負，仍正確
+    var hb = topEl.getBoundingClientRect().bottom; // fixed＝header 高；200% 靜態捲離後為負，仍正確
     var cur = days[0];
     for (var i = 0; i < days.length; i++) {
       if (days[i].getBoundingClientRect().top <= hb + 90) cur = days[i]; else break;
@@ -1434,7 +1449,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   });
 
   // 日期 chip 統一走單一路徑：阻止原生 fragment 捲動，先更新 URL／active chip，再只做一次垂直捲動。
-  // 日期列立即置中，且捲動完成前暫停 scroll spy，避免 iOS WebKit 同時重繪 sticky header 與兩個 scroll container。
+  // 日期列立即置中，且捲動完成前暫停 scroll spy，避免 iOS WebKit 同時重繪 header 與兩個 scroll container。
   chips.forEach(function (c) {
     c.addEventListener('click', function (event) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
