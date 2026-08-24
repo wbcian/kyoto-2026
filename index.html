@@ -1164,7 +1164,16 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     for (var k = 0; k < segBtns.length; k++) {
       segBtns[k].addEventListener('click', function () {
         var v = this.getAttribute('data-seg');
+        // 三個分流日（12/25・12/28・12/30）共用同一視角，按一次就同時換掉另外兩天的軌，
+        // 而兩軌高度不同：在 12/30 切換時，上面 12/25＋12/28 合計縮 244px，底下內容整片上移，
+        // 按鈕直接從指頭下彈出畫面（實測 top 206px → -39px）。
+        // Chrome 有 scroll anchoring 會自動補回來，WebKit（iOS Safari／LINE webview）沒有這功能，
+        // 所以自己補：記下按鈕切換前的視窗座標，重排後把位移捲回去。
+        // 一定要 instant——html 在非 reduced-motion 下是 scroll-behavior:smooth，否則補償本身變成滑動。
+        var top0 = this.getBoundingClientRect().top;
         setSeg(v);
+        var drift = this.getBoundingClientRect().top - top0;
+        if (drift) window.scrollBy({ top: drift, left: 0, behavior: 'instant' });
         try { localStorage.setItem(SEG_KEY, v); } catch (e) {}
       });
     }
