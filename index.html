@@ -23,9 +23,9 @@
   --accent:#A31F2D; --green:#3E6B52; --amber:#8A5F0A;
   --indigo:#2A467F; --night:#1B2440; --night-ink:#EFE9DC; --band:#EFEADD;
   --seg-on-bg:var(--night); --seg-on-ink:var(--night-ink);
-  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem; --sp-7:3rem;
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem; --sp-5:1.5rem; --sp-6:2rem;
   --radius:8px; --radius-card:11px; --radius-chip:9px; --radius-note:6px; --radius-pill:999px;
-  --tap:3rem; --btn-edge:#8C7B5A;
+  --tap:3rem; --btn-edge:#8C7B5A; --wrap:40rem; /* 內容欄寬：main／brand／daystrip／banner／footer 共用 */
   --font-serif:"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif TC", "Noto Serif CJK TC", serif;
 }
 @media (prefers-color-scheme: dark) {
@@ -48,8 +48,8 @@ body {
   overflow-wrap: break-word; line-break: strict;
 }
 .display { font-family: var(--font-serif); }
-main { max-width: 40rem; width: 100%; margin-inline: auto; padding: 0 var(--sp-4) 7rem; }
-section[id] { scroll-margin-top: 9rem; } /* fixed header（brand+rail ≈ 8.5rem）＋ 8px 帶 */
+main { max-width: var(--wrap); width: 100%; margin-inline: auto; padding: 0 var(--sp-4) 7rem; }
+section[id] { scroll-margin-top: 9rem; } /* header 靜態捲動模式的保守值；fixed 模式下由 --top-h 覆蓋（見 min-height:34em） */
 h1,h2,h3,h4 { line-height: 1.35; margin: 0; }
 a { color: var(--indigo); }
 a[href^="tel:"] { display: inline-flex; align-items: center; min-height: var(--tap); padding: .4em .6em; font-weight: 600; }
@@ -66,8 +66,12 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 @media (min-height: 34em) {
   .top { position: fixed; top: 0; left: 0; right: 0; }
   body { padding-top: var(--top-h, 8.5rem); }
+  /* 捲到某天時要讓開 header。header 實高由 JS 量進 --top-h（動態字級／換行都會變），
+     這裡跟著同一個變數走，不要另外寫死一個數字——否則字放大後點日期，當天標題會被捲到 header 底下。
+     smoothTo 的到位判定容差 160px 也是對著這個距離抓的。 */
+  section[id] { scroll-margin-top: calc(var(--top-h, 8.5rem) + 8px); }
 }
-.brand { display: flex; flex-wrap: wrap; row-gap: var(--sp-2); align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4) var(--sp-2); max-width: 40rem; margin-inline: auto; position: relative; }
+.brand { display: flex; flex-wrap: wrap; row-gap: var(--sp-2); align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4) var(--sp-2); max-width: var(--wrap); margin-inline: auto; position: relative; }
 .brand h1 { font-size: 1.1875rem; font-weight: 600; letter-spacing: .04em; }
 .brand h1 .yr { font-size: .78em; opacity: .8; font-weight: 500; margin-left: .35em; }
 #btn-today {
@@ -79,7 +83,7 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
   touch-action: manipulation; white-space: nowrap;
 }
 #btn-today[hidden] { display: none; }
-.daystrip { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-2) var(--sp-4) var(--sp-3); max-width: 40rem; margin-inline: auto; -webkit-overflow-scrolling: touch; }
+.daystrip { display: flex; gap: var(--sp-2); overflow-x: auto; padding: var(--sp-2) var(--sp-4) var(--sp-3); max-width: var(--wrap); margin-inline: auto; -webkit-overflow-scrolling: touch; }
 .chip {
   flex: 0 0 auto; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
   min-width: 3.4rem; min-height: var(--tap); padding: .25em .6em;
@@ -92,27 +96,22 @@ time, .tl-time { font-variant-numeric: tabular-nums; }
 /* .chip.absent 虛線＋淡化樣式暫時取消（2026-07-12 指示：日期不用虛線區分）；markup 保留 class，要恢復加回 border-style:dashed; opacity:.85 */
 .chip[aria-current="true"] { background: var(--night-ink); color: var(--night); border-color: var(--night-ink); }
 /* ===== banner ===== */
-#banner { max-width: 40rem; margin: var(--sp-3) auto 0; padding: 0 var(--sp-4); }
+#banner { max-width: var(--wrap); margin: var(--sp-3) auto 0; padding: 0 var(--sp-4); }
 #banner .bn {
   display: block; padding: var(--sp-3) var(--sp-4);
   background: var(--surface); border: 1px solid var(--line-strong); border-left: 4px solid var(--accent);
   border-radius: var(--radius-card); text-decoration: none; color: var(--ink); font-weight: 500; font-size: .8125rem; line-height: 1.5;
 }
 /* ===== views（行程＝9 天連續長卷軸，同設計稿捲動模型；訂票/住宿・資訊＝分頁） ===== */
-html.js body[data-view="days"] .page { display: none; }
-html.js body[data-view="bookings"] #view-days,
-html.js body[data-view="bookings"] #info { display: none; }
-html.js body[data-view="info"] #view-days,
-html.js body[data-view="info"] #bookings { display: none; }
+/* 每頁「不是自己的 view 就藏」，不逐一列出 view×頁 的組合——加第四個分頁時不用再展開一輪 */
+html.js body:not([data-view="days"])     #view-days,
+html.js body:not([data-view="bookings"]) #bookings,
+html.js body:not([data-view="info"])     #info { display: none; }
 /* 日期導覽與當日重點只屬於行程頁；訂票／住宿頁保留品牌列即可。 */
-html.js body[data-view="bookings"] .daystrip,
-html.js body[data-view="bookings"] #banner,
-html.js body[data-view="bookings"] #btn-today,
-html.js body[data-view="bookings"] #fab-now,
-html.js body[data-view="info"] .daystrip,
-html.js body[data-view="info"] #banner,
-html.js body[data-view="info"] #btn-today,
-html.js body[data-view="info"] #fab-now { display: none; }
+html.js body:not([data-view="days"]) .daystrip,
+html.js body:not([data-view="days"]) #banner,
+html.js body:not([data-view="days"]) #btn-today,
+html.js body:not([data-view="days"]) #fab-now { display: none; }
 html.js body[data-view="days"] .day:not(.holiday) .day-sep { display: none; }
 /* 日與日的厚帶分界（設計稿 8px #efeadd）；label 式 day-sep 留給無 JS 與節日。
    第一天不畫：頁頂沒有「日與日」可分，帶子會零間距頂著 banner／LINE 提示卡，看起來像跑版（2026-07-13） */
@@ -160,7 +159,7 @@ html.js body[data-view="days"] #view-days > .day:first-of-type { border-top: 0; 
 .tl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35em .6em; }
 .tl-head h3 { font-size: 1rem; font-weight: 700; }
 .tl-note { margin: .15em 0 0; color: var(--ink-2); font-size: .8125rem; line-height: 1.55; }
-.tl-note.warn { color: #6b5a2a; background: rgba(138,95,10,.09); border-left: 3px solid var(--amber); padding: 6px 10px; border-radius: var(--radius-note); }
+.tl-note.warn { color: #6b5a2a; background: color-mix(in srgb, var(--amber) 9%, transparent); border-left: 3px solid var(--amber); padding: 6px 10px; border-radius: var(--radius-note); }
 @media (prefers-color-scheme: dark) { .tl-note.warn { color: var(--ink); background: color-mix(in srgb, var(--amber) 16%, transparent); } }
 /* 時間欄固定 3.4em：字放大到它吃掉內容欄時（320px×200%）改疊成上下兩行 */
 @container (max-width: 12em) {
@@ -190,10 +189,7 @@ details.spot { display: block; margin: var(--sp-2) 0 0; } /* 上緣間距放 det
    版面只佔一行字高，命中區用 padding .7rem＋負 margin 撐回 ≥44px（22px 行高＋2×11.2px） */
 details.spot summary {
   display: inline-flex; align-items: center; gap: .35em;
-  padding: .7rem .4rem; margin: -.7rem -.4rem;
   cursor: pointer; color: var(--indigo); font-size: .8125rem; font-weight: 600;
-  text-decoration: underline dotted color-mix(in srgb, var(--indigo) 55%, transparent);
-  text-underline-offset: .35em;
   list-style: none; touch-action: manipulation;
 }
 details.spot summary::-webkit-details-marker { display: none; }
@@ -237,8 +233,9 @@ html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height
 }
 .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-3); }
 /* 時間軸內的地圖膠囊 → 同款註腳文字連結（A案）；資訊頁 .chips 內維持小判膠囊 */
-.tl .btn-map {
-  min-height: 0; border: 0; background: none;
+.tl .btn-map { min-height: 0; border: 0; background: none; }
+/* A案註腳連結的共用外觀：兩處只差在各自的 reset，版面值（撐 44px 命中區的 padding＋負 margin）只寫一份 */
+details.spot summary, .tl .btn-map {
   padding: .7rem .4rem; margin: -.7rem -.4rem;
   text-decoration: underline dotted color-mix(in srgb, var(--indigo) 55%, transparent);
   text-underline-offset: .35em;
@@ -246,7 +243,6 @@ html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height
 .tl .btn-map:focus-visible, details.spot summary:focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; border-radius: 4px; }
 /* ===== 分流雙軌（複線時刻表：分頭/會合＝主軸里程碑，兩軌＝獨立卡片、軌色貫穿縱線） ===== */
 .split { display: grid; gap: var(--sp-5); margin: 0 0 var(--sp-4); }
-.split .track { padding: 0; }
 .split .track-family { --track-c: var(--green); }
 .split .track-solo   { --track-c: var(--indigo); }
 /* 軌標題留一行細標（帶去向脈絡，且撐無 JS fallback 的可讀性）；不再做整條 tinted 帶 */
@@ -256,9 +252,9 @@ html.js .tl-actions details.spot[open] > .spot-body:not(.fit) { width: 0; height
 /* ===== 「看誰的」切換（交接包 1a）：全站同步一個視角，記憶在裝置 ===== */
 /* 有 JS 才只顯示一軌；無 JS 時切換鈕隱藏、兩軌都攤開可讀（高齡＋LINE webview localStorage 不可靠的雙保險） */
 .seg { display: none; }
-html.js .seg { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); margin: 0 0 var(--sp-4); padding: 5px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); }
-/* 「看誰的」視覺 label 已移除（2026-07-12 指示：不用提示）；語意留在 .seg 的 aria-label */
-.seg .seg-row { display: flex; gap: 4px; flex: 1 1 12rem; min-width: 0; }
+/* 「看誰的」視覺 label 已移除（2026-07-12 指示：不用提示）；語意留在 .seg 的 aria-label。
+   label 沒了以後 .seg 就只裝兩顆按鈕，原本的 .seg-row 包裝層一併攤平，不再兩層 flex 疊著排。 */
+html.js .seg { display: flex; gap: 4px; margin: 0 0 var(--sp-4); padding: 5px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-pill); }
 .seg-btn { flex: 1; min-width: 0; min-height: 2.6rem; padding: .3em .5em; font: inherit; font-size: .8125rem; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-radius: var(--radius-pill); cursor: pointer; touch-action: manipulation; }
 .seg-btn[aria-current="true"] { background: var(--seg-on-bg); color: var(--seg-on-ink); box-shadow: 0 1px 3px rgba(0,0,0,.14); }
 html.js .split[data-seg-view="solo"] .track-family,
@@ -269,7 +265,7 @@ html.js .split[data-seg-view="family"] .track-solo { display: none; }
 .tl-mile.fork { color: var(--ink-2); }
 .tl-mile.rejoin { color: var(--indigo); }
 /* ===== now indicator ===== */
-.now-line { grid-column: 1 / -1; display: flex; align-items: center; gap: .6em; color: var(--accent); font-weight: 600; font-size: .78125rem; margin: 0 0 var(--sp-3); }
+.now-line { display: flex; align-items: center; gap: .6em; color: var(--accent); font-weight: 600; font-size: .78125rem; margin: 0 0 var(--sp-3); }
 .now-line::before { content: ""; width: .5rem; height: .5rem; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent); }
 .now-line::after { content: ""; flex: 1; border-top: 2px solid var(--accent); opacity: .45; }
 /* ===== bookings ===== */
@@ -279,10 +275,10 @@ html.js .split[data-seg-view="family"] .track-solo { display: none; }
 .bk { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--sp-3); }
 .bk li { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--sp-3) var(--sp-4); min-width: 0; container-type: inline-size; }
 .bk li.hot { border-left: 4px solid var(--accent); }
-.bk li.dropped { opacity: .62; }
+.bk li[data-status="dropped"] { opacity: .62; }
 /* 已訂＝低調結案：淡化標題即可。整塊 opacity 會連「✓ 已訂」一起壓到 4.5:1 以下，且子層救不回來 */
-.bk li.booked .bk-head h3 { color: var(--ink-2); }
-.bk li.booked .bk-count { color: var(--green); }
+.bk li[data-status="booked"] .bk-head h3 { color: var(--ink-2); }
+.bk li[data-status="booked"] .bk-count { color: var(--green); }
 .bk .bk-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35em .6em; }
 .bk .bk-head h3 { font-size: 1.0625rem; font-weight: 600; overflow-wrap: anywhere; }
 .bk .bk-open { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -316,8 +312,8 @@ html.js .split[data-seg-view="family"] .track-solo { display: none; }
 .tabbar a .em { font-size: 1.1875rem; line-height: 1; }
 .tabbar a[aria-current="true"] { color: var(--indigo); font-weight: 600; box-shadow: inset 0 2px 0 var(--indigo); }
 /* ===== footer ===== */
-footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) var(--sp-5); color: var(--ink-2); font-size: .71875rem; line-height: 1.7; }
-.noscript-note { max-width: 40rem; margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4); }
+footer { max-width: var(--wrap); margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) var(--sp-5); color: var(--ink-2); font-size: .71875rem; line-height: 1.7; }
+.noscript-note { max-width: var(--wrap); margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4); }
 /* ===== 浮動「今」鈕 ===== */
 .fab-now { position: fixed; right: var(--sp-4); bottom: calc(4.2rem + env(safe-area-inset-bottom)); z-index: 25;
   display: inline-flex; align-items: center; justify-content: center; min-width: var(--tap); min-height: var(--tap); padding: 0 .3em;
@@ -327,7 +323,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 /* ===== LINE 頁頂提示（字級・框線・寬度皆對齊 #banner .bn 的一般提醒，不做特別突出）
    寬度：#banner 是「外盒 40rem＋水平 padding、卡片在內」，tip 卡自己就是卡片——
    要同幾何得自算 width/max-width 扣掉兩側 --sp-4，否則窄螢幕上滿版貼齊螢幕邊、比其他卡寬（2026-07-13 跑版回報） ===== */
-.tip-line { width: calc(100% - 2 * var(--sp-4)); max-width: calc(40rem - 2 * var(--sp-4)); margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
+.tip-line { width: calc(100% - 2 * var(--sp-4)); max-width: calc(var(--wrap) - 2 * var(--sp-4)); margin: var(--sp-3) auto 0; padding: var(--sp-3) var(--sp-4);
   display: flex; gap: var(--sp-3); align-items: flex-start;
   background: var(--surface); border: 1px solid var(--line-strong);
   border-radius: var(--radius-card); font-size: .8125rem; line-height: 1.5; }
@@ -411,8 +407,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <p class="draft-note">🚗 租車仍待確認是否採用；目前白天動線以大眾運輸為主案。</p>
     <div class="tl-mile fork">🔀 白天各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
-      <div class="track track-family" data-track="family">
+      <div class="seg" role="group" aria-label="看誰的行程"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div>
+      <div class="track track-family">
         <h4>👨‍👩‍👦 柏安&amp;爸媽（早餐後前往勝尾寺・其餘時刻未細排）</h4>
         <div class="tl">
           <article class="tl-row" data-t="06:30">
@@ -450,7 +446,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </article>
         </div>
       </div>
-      <div class="track track-solo" data-track="solo">
+      <div class="track track-solo">
         <h4>🧍 謙（台北出發）</h4>
         <div class="tl">
           <article class="tl-row" data-t="06:00">
@@ -725,8 +721,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     </div>
     <div class="tl-mile fork">🔀 午後分頭行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
-      <div class="track track-family" data-track="family">
+      <div class="seg" role="group" aria-label="看誰的行程"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div>
+      <div class="track track-family">
         <h4>👨‍👩‍👦 柏安&amp;爸媽 → 奈良</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → 奈良</div></div>
@@ -749,7 +745,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </article>
         </div>
       </div>
-      <div class="track track-solo" data-track="solo">
+      <div class="track track-solo">
         <h4>🧍 謙 → 京都／大阪市區（依晚餐地點）</h4>
         <div class="tl">
           <div class="tl-row transit"><div class="tl-time"><time>13:30</time></div><div class="tl-body"><span class="ico">🚆</span>宇治 → 京都／大阪市區（路線待晚餐地點確認）</div></div>
@@ -842,8 +838,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     <div class="stay-line">🏨 今晚：Royal Park 梅小路（柏安&amp;爸媽續住；謙退房）</div>
     <div class="tl-mile fork">🔀 全日各自行動</div>
     <div class="split">
-      <div class="seg" role="group" aria-label="看誰的行程"><div class="seg-row"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div></div>
-      <div class="track track-family" data-track="family">
+      <div class="seg" role="group" aria-label="看誰的行程"><button type="button" class="seg-btn" data-seg="family">👨‍👩‍👦 柏安&amp;爸媽</button><button type="button" class="seg-btn" data-seg="solo">🧍 謙</button></div>
+      <div class="track track-family">
         <h4>👨‍👩‍👦 柏安&amp;爸媽 → 嵐山（草案・細節待排）</h4>
         <div class="tl">
           <article class="tl-row">
@@ -863,7 +859,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
           </article>
         </div>
       </div>
-      <div class="track track-solo" data-track="solo">
+      <div class="track track-solo">
         <h4>🧍 謙（返台日・輕裝）</h4>
         <div class="tl">
           <article class="tl-row" data-t="07:00">
@@ -1050,7 +1046,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       <div class="bk-head"><h3>玄品河豚 祇園（12/27）</h3><span class="badge badge-opt">🔸 備選</span><span class="who">柏安</span></div>
       <p class="bk-note">敲鐘後若 17:00 開店又有空再去（walk-in 不保證）；要穩才先訂 <a href="tel:+81755315815">📞 075-531-5815（+81-75-531-5815）</a>。</p>
     </li>
-    <li class="dropped" data-status="dropped">
+    <li data-status="dropped">
       <div class="bk-head"><h3>嵐山小火車</h3><span class="bk-open">當日停駛</span></div>
       <p class="bk-note">12/30 起冬季全休，當日無法搭乘。</p>
     </li>
@@ -1134,49 +1130,61 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
 <script>
 (function () {
   document.documentElement.classList.add('js');
-  // localStorage 是 origin 範圍：wbcian.github.io 下其他專案頁共用，key 要加前綴
-  var TIP_KEY = 'kyoto2026:hideLineTip';
-  try {
-    var tip = document.getElementById('tip-line');
-    if (tip && localStorage.getItem(TIP_KEY) !== '1') {
-      tip.hidden = false;
-      document.getElementById('tip-close').addEventListener('click', function () {
-        tip.hidden = true;
-        try { localStorage.setItem(TIP_KEY, '1'); } catch (e) {}
-      });
-    }
-  } catch (e) {}
+  // querySelectorAll 一律經此取用。舊 WebKit 沒有 NodeList.prototype.forEach，
+  // 直接對 NodeList 用 .forEach 會 throw 並帶走整個 IIFE（日期列、spy、〔今天〕全失效）。
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  // localStorage：'kyoto2026:' 前綴是必要的——origin 範圍會與 wbcian.github.io 下其他專案頁共用；
+  // 存取一律包 try/catch（LINE webview 會擋）。兩者都收在這裡，之後新增偏好不必再各自記一遍。
+  function lsGet(k) { try { return localStorage.getItem('kyoto2026:' + k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem('kyoto2026:' + k, v); } catch (e) {} }
+
+  // ===== 按一下就改變版面高度的控制項，一律走這裡 =====
+  // WebKit（iOS Safari／LINE webview）沒有實作 scroll anchoring：只要視窗「上方」有內容變高變矮，
+  // 底下整片就跟著位移。Chrome 會自動補回來，所以桌機完全看不出來，手機上卻是實打實的跳動
+  // （12/30 分流切換實測跳 245px，按鈕直接從指頭下彈出畫面；已在 iOS Simulator 重現與驗證）。
+  // 作法：量 anchor 在改動前的視窗座標，重排後把差值捲回去，使用者盯著的東西就不會跑掉。
+  // anchor 要挑「改動後仍然存在、且使用者眼睛在看」的元素——通常就是被點的那個控制項本身，
+  // 但控制項自己會消失時（例如提示卡的關閉鈕），要改用它下方留得住的內容。
+  // 一定要 instant：html 在非 reduced-motion 下是 scroll-behavior:smooth，否則補償本身會變成一段滑動。
+  function keepAnchored(anchor, mutate) {
+    var top0 = anchor.getBoundingClientRect().top;
+    mutate();
+    var drift = anchor.getBoundingClientRect().top - top0;
+    if (drift) window.scrollBy({ top: drift, left: 0, behavior: 'instant' });
+  }
+
+  var tip = document.getElementById('tip-line');
+  if (tip && lsGet('hideLineTip') !== '1') {
+    tip.hidden = false;
+    document.getElementById('tip-close').addEventListener('click', function () {
+      // 收起提示卡＝頁頂少掉一張卡。錨不能用關閉鈕自己（它跟著消失），用下方的 <main>。
+      keepAnchored(document.querySelector('main'), function () { tip.hidden = true; });
+      lsSet('hideLineTip', '1');
+    });
+  }
 
   // ===== 「看誰的」切換：全站同步一個視角（柏安＆爸媽／謙），記憶在裝置 =====
   // 無 JS 時 CSS 讓 .seg 隱藏、兩軌都攤開（高齡＋LINE webview localStorage 不可靠的雙保險）
   (function () {
-    var SEG_KEY = 'kyoto2026:segView';
-    var splits = document.querySelectorAll('.split');
-    var segBtns = document.querySelectorAll('.seg-btn');
+    var splits = qsa('.split');
+    var segBtns = qsa('.seg-btn');
     if (!splits.length) return;
     function setSeg(v) {
       v = (v === 'solo') ? 'solo' : 'family'; // 預設柏安＆爸媽
-      for (var i = 0; i < splits.length; i++) splits[i].setAttribute('data-seg-view', v);
-      for (var j = 0; j < segBtns.length; j++) segBtns[j].setAttribute('aria-current', String(segBtns[j].getAttribute('data-seg') === v));
+      splits.forEach(function (sp) { sp.setAttribute('data-seg-view', v); });
+      segBtns.forEach(function (b) { b.setAttribute('aria-current', String(b.getAttribute('data-seg') === v)); });
     }
-    var stored = null; try { stored = localStorage.getItem(SEG_KEY); } catch (e) {}
-    setSeg(stored);
-    for (var k = 0; k < segBtns.length; k++) {
-      segBtns[k].addEventListener('click', function () {
+    setSeg(lsGet('segView'));
+    segBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
         var v = this.getAttribute('data-seg');
-        // 三個分流日（12/25・12/28・12/30）共用同一視角，按一次就同時換掉另外兩天的軌，
-        // 而兩軌高度不同：在 12/30 切換時，上面 12/25＋12/28 合計縮 244px，底下內容整片上移，
-        // 按鈕直接從指頭下彈出畫面（實測 top 206px → -39px）。
-        // Chrome 有 scroll anchoring 會自動補回來，WebKit（iOS Safari／LINE webview）沒有這功能，
-        // 所以自己補：記下按鈕切換前的視窗座標，重排後把位移捲回去。
-        // 一定要 instant——html 在非 reduced-motion 下是 scroll-behavior:smooth，否則補償本身變成滑動。
-        var top0 = this.getBoundingClientRect().top;
-        setSeg(v);
-        var drift = this.getBoundingClientRect().top - top0;
-        if (drift) window.scrollBy({ top: drift, left: 0, behavior: 'instant' });
-        try { localStorage.setItem(SEG_KEY, v); } catch (e) {}
+        // 三個分流日（12/25・12/28・12/30）共用同一視角，按一次就同時換掉另外兩天的軌。
+        // 兩軌高度不同，所以在 12/30 按下去時，上面 12/25（546→385px）＋12/28（370→287px）
+        // 合計縮 244px——這正是 keepAnchored 要擋掉的那種變動。錨＝被點的按鈕本身。
+        keepAnchored(this, function () { setSeg(v); });
+        lsSet('segView', v);
       });
-    }
+    });
   })();
 
   // ===== 介紹面板全寬但膠囊不掉行 =====
@@ -1185,7 +1193,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   // 開啟瞬間面板被 CSS 壓成 0×0（.fit 掛上前），所以量到的 details 位置就是膠囊原位，不會被面板內容擠跑。
   // 字放大的堆疊模式（container query 改 display:block）下 details 左緣＝列左緣，shift 自然為 0，同一條公式通用。
   (function () {
-    var spots = Array.prototype.slice.call(document.querySelectorAll('.tl-actions > details.spot'));
+    var spots = qsa('.tl-actions > details.spot');
     if (!spots.length) return;
     function fitSpot(d) {
       var body = d.querySelector('.spot-body');
@@ -1198,6 +1206,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       body.style.width = ar.width + 'px';
       body.classList.add('fit');
     }
+    // 這裡不需要 keepAnchored：summary 是 details 的第一個子元素，面板往下長，
+    // 被點的膠囊本身不會移動（Chrome 與 iOS Simulator 實測位移皆為 0）。
+    // 唯一會位移的情況是「展開畫面外的面板」，而畫面外的東西點不到。
     spots.forEach(function (d) {
       d.addEventListener('toggle', function () { fitSpot(d); });
     });
@@ -1211,26 +1222,32 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     document.addEventListener('visibilitychange', function () { if (!document.hidden) refitOpen(); });
   })();
 
-  var TRIP_START = '2026-12-24', TRIP_END = '2027-01-01';
-  var days = Array.prototype.slice.call(document.querySelectorAll('.day'));
-  var chips = Array.prototype.slice.call(document.querySelectorAll('.daystrip .chip'));
+  var TRIP_START = '2026-12-24'; // 只用於「行前」判斷；「是否在旅程中」直接看今天有沒有對應的 .day
+  var days = qsa('.day');
+  var chips = qsa('.daystrip .chip');
   var tabs = { days: document.getElementById('tab-days'), bookings: document.getElementById('tab-bookings'), info: document.getElementById('tab-info') };
   var btnToday = document.getElementById('btn-today');
   var fabNow = document.getElementById('fab-now');
   var banner = document.getElementById('banner');
 
   var qs = new URLSearchParams(location.search); // ?date=2026-12-27&time=13:40 可預覽旅途中模式
+  // formatter 無狀態、時區固定，但建構不便宜（首次用 Intl 會拉 locale 資料），
+  // 而這兩個函式在首屏前與每次回前景都會走到——建一次就留著。?date=／?time= 仍短路，連建都不用建。
+  var fmtDate, fmtTime;
   function jstDate() { // YYYY-MM-DD（日本時間）
-    return qs.get('date') || new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(new Date());
+    if (qs.get('date')) return qs.get('date');
+    if (!fmtDate) fmtDate = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' });
+    return fmtDate.format(new Date());
   }
   function jstTime() { // HH:MM（日本時間）
-    return qs.get('time') || new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    if (qs.get('time')) return qs.get('time');
+    if (!fmtTime) fmtTime = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hour12: false });
+    return fmtTime.format(new Date());
   }
   // 日期衍生狀態一律經此重算：載入時算一次，回前景（可能已跨過午夜）再算一次
-  var today, inTrip, todaySec;
+  var today, todaySec; // todaySec 有值 ⇔ 今天在旅程中，不另外存一份 inTrip
   function recomputeToday() {
     today = jstDate();
-    inTrip = (today >= TRIP_START && today <= TRIP_END);
     todaySec = null;
     days.forEach(function (d) { if (d.getAttribute('data-date') === today) todaySec = d; });
     btnToday.hidden = fabNow.hidden = !todaySec;
@@ -1251,8 +1268,8 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   // 行程頁＝9 天連續長卷軸（設計稿捲動模型）：chip 保留 anchor 作無 JS fallback；
   // JS 模式攔截點擊，只執行一次受控捲動，避免 iOS WebKit 的原生 fragment＋scrollIntoView 雙重捲動。
   // 現用日由 scroll spy 回寫 date rail；.day 不再做單日 display 切換
-  var lastView = null;
   var rail = document.querySelector('.daystrip');
+  function isDaysView() { return document.body.getAttribute('data-view') === 'days'; }
   var lastActiveId = null;
   function revealActiveChip(chip, center, instant) {
     var rr = rail.getBoundingClientRect();
@@ -1271,8 +1288,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     rail.scrollTo({ left: Math.max(0, left), behavior: (instant || REDUCED) ? 'instant' : 'smooth' });
   }
   function setActiveChip(id, centerRail, instantRail) {
-    var href = '#' + id, curChip = null;
     var changed = id !== lastActiveId;
+    if (!changed && !centerRail) return; // spy 每 frame 進來：日期沒換又不需置中就沒事可做，別白走一遍 chip
+    var href = '#' + id, curChip = null;
     chips.forEach(function (c) {
       var on = c.getAttribute('href') === href;
       if (on) curChip = c;
@@ -1294,38 +1312,57 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       setActiveChip(currentDayId(), true); // 明確動作：rail 置中
       renderDayBanner();
     }
-    lastView = view;
   }
   // banner 恆顯「今天」的重點（長卷軸下與目前捲到哪一天無關）；行前顯示最近訂票倒數
+  function bn(href, text) { return '<a class="bn" href="' + href + '">⏰ ' + text + '</a>'; }
+  var lastBannerHTML = null;
   function renderDayBanner() {
     var msg = '';
-    if (inTrip && todaySec && todaySec.getAttribute('data-banner')) {
+    if (todaySec && todaySec.getAttribute('data-banner')) {
       var dd = todaySec.getAttribute('data-date').split('-'); // 2026-12-27 → 12/27（設計稿 banner 格式）
-      msg = '<a class="bn" href="#' + todaySec.id + '">⏰ 今天 ' + (+dd[1]) + '/' + (+dd[2]) + ' 重點：' + todaySec.getAttribute('data-banner') + '</a>';
-    } else if (!inTrip && today < TRIP_START) {
+      msg = bn('#' + todaySec.id, '今天 ' + (+dd[1]) + '/' + (+dd[2]) + ' 重點：' + todaySec.getAttribute('data-banner'));
+    } else if (today < TRIP_START) {
       msg = preTripBanner();
     }
+    // banner 在 <main> 之上，重寫子樹會讓底下整頁重排；內容多半沒變（常常還是空字串），不同才寫
+    if (msg === lastBannerHTML) return;
+    lastBannerHTML = msg;
     banner.innerHTML = msg;
   }
   // scroll spy：取「區塊頂已進到 header 下緣 +90px 內」的最後一天（rAF 節流；
   // 捲動中必有 frame，rAF 在此可靠——不可靠的是無捲動的背景分頁，那時也不會有 scroll 事件）
   var topEl = document.querySelector('.top');
-  // header 是 fixed（見 CSS 註解），不佔版面，高度要自己回填給 body padding。
+  // header 是 fixed（見 CSS 註解），所以 rect.bottom 就是它的高度；200% 字級下改為靜態捲動，
+  // 捲離後這個值會變負，spy 的判定帶與 smoothTo 的到位判定在那種情況下也仍然成立。
+  function headerBottom() { return topEl.getBoundingClientRect().bottom; }
+  // fixed 不佔版面，高度要自己回填給 body padding。
   // 會變高的情形：〔今天〕鈕出現／消失、品牌列換行、iOS 動態字級改變、轉向。
+  var lastTopH = null;
   function syncTopHeight() {
-    document.documentElement.style.setProperty('--top-h', topEl.offsetHeight + 'px');
+    var h = topEl.offsetHeight + 'px';
+    if (h === lastTopH) return; // --top-h 掛在 :root 且會繼承，重寫等於讓整棵樹 style 失效；值沒變就別寫
+    lastTopH = h;
+    document.documentElement.style.setProperty('--top-h', h);
   }
   syncTopHeight();
-  if (window.ResizeObserver) new ResizeObserver(syncTopHeight).observe(topEl);
-  else window.addEventListener('resize', syncTopHeight);
+  if (window.ResizeObserver) new ResizeObserver(syncTopHeight).observe(topEl); // RO 回呼在 layout 之後、paint 之前，量測免費
+  else {
+    // 舊 iOS 的 fallback：resize 在網址列收合／轉向／鍵盤開合時都會發，且常落在捲動途中。
+    // 併進一個 rAF，避免一次捲動裡連續觸發多次強制 layout。
+    var topHRaf = null;
+    window.addEventListener('resize', function () {
+      if (topHRaf) return;
+      topHRaf = requestAnimationFrame(function () { topHRaf = null; syncTopHeight(); });
+    });
+  }
   // 平滑捲動＋保險絲：部分環境（省電模式/webview/系統停用動畫）smooth 會 no-op 或被取消——
   // 700ms 未到位就 instant 補跳；reduced-motion 一律 instant；seq 讓連點時舊保險絲失效
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fuseSeq = 0;
   var pendingDayScroll = null;
-  function smoothTo(el, block, done) {
+  function smoothTo(el, block, done, instant) {
     block = block || 'start';
-    if (REDUCED) {
+    if (REDUCED || instant) {
       el.scrollIntoView({ behavior: 'instant', block: block });
       if (done) done();
       return;
@@ -1337,7 +1374,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
       var r = el.getBoundingClientRect();
       var arrived = (block === 'center')
         ? (r.top > 0 && r.top < window.innerHeight * .7)
-        : (Math.abs(r.top - topEl.getBoundingClientRect().bottom) < 160);
+        : (Math.abs(r.top - headerBottom()) < 160);
       if (!arrived) el.scrollIntoView({ behavior: 'instant', block: block });
       if (done) done();
     }, 700);
@@ -1345,7 +1382,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   var spyRaf = null;
   function spyPick() {
     if (pendingDayScroll) return; // 日期跳轉途中不要讓經過的日期重寫 active chip／啟動橫向動畫
-    var hb = topEl.getBoundingClientRect().bottom; // fixed＝header 高；200% 靜態捲離後為負，仍正確
+    var hb = headerBottom();
     var cur = days[0];
     for (var i = 0; i < days.length; i++) {
       if (days[i].getBoundingClientRect().top <= hb + 90) cur = days[i]; else break;
@@ -1355,7 +1392,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     if (cur) setActiveChip(cur.id);
   }
   window.addEventListener('scroll', function () {
-    if (document.body.getAttribute('data-view') !== 'days') return;
+    if (!isDaysView()) return;
     if (spyRaf) return;
     spyRaf = requestAnimationFrame(function () { spyRaf = null; spyPick(); });
   }, { passive: true });
@@ -1365,22 +1402,22 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   }
   function preTripBanner() {
     var openTodo = [], future = null;
-    document.querySelectorAll('.bk li[data-open][data-status="todo"]').forEach(function (li) {
+    qsa('.bk li[data-open][data-status="todo"]').forEach(function (li) {
       var n = daysUntil(li.getAttribute('data-open'));
       if (n <= 0) openTodo.push(li);
       else if (future === null || n < future.n) future = { n: n, li: li };
     });
-    if (openTodo.length === 1) return '<a class="bn" href="#bookings">⏰ 還沒訂：' + openTodo[0].querySelector('h3').textContent + '（已開放・快訂）</a>';
-    if (openTodo.length > 1) return '<a class="bn" href="#bookings">⏰ 有 ' + openTodo.length + ' 項已開放還沒訂 → 看訂票清單</a>';
-    if (future) return '<a class="bn" href="#bookings">⏰ 最近訂票：' + future.li.querySelector('h3').textContent + '・還 ' + future.n + ' 天</a>';
+    if (openTodo.length === 1) return bn('#bookings', '還沒訂：' + openTodo[0].querySelector('h3').textContent + '（已開放・快訂）');
+    if (openTodo.length > 1) return bn('#bookings', '有 ' + openTodo.length + ' 項已開放還沒訂 → 看訂票清單');
+    if (future) return bn('#bookings', '最近訂票：' + future.li.querySelector('h3').textContent + '・還 ' + future.n + ' 天');
     return '';
   }
   // 訂票狀態：已訂不論有無開放日都收尾；倒數只算「待訂＋有開放日」
   function renderBookings() {
-    document.querySelectorAll('.bk li').forEach(function (li) {
+    qsa('.bk li').forEach(function (li) {
       var el = li.querySelector('.bk-count'); if (!el) return;
       var status = li.getAttribute('data-status');
-      if (status === 'booked') { el.textContent = '✓ 已訂'; li.classList.add('booked'); return; }
+      if (status === 'booked') { el.textContent = '✓ 已訂'; return; } // 樣式直接吃 [data-status]，不用再鏡射成 class
       li.classList.remove('hot'); // 跨日重算時要能退回
       if (status !== 'todo' || !li.hasAttribute('data-open')) { el.textContent = ''; return; }
       var n = daysUntil(li.getAttribute('data-open'));
@@ -1416,16 +1453,14 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   function scrollToNow(instant) {
     if (!todaySec) return;
     var nl = todaySec.querySelector('.now-line');
-    var el = nl || todaySec, block = nl ? 'center' : 'start';
-    if (instant) { el.scrollIntoView({ behavior: 'instant', block: block }); return; }
-    smoothTo(el, block);
+    smoothTo(nl || todaySec, nl ? 'center' : 'start', null, instant);
   }
   // 「今天」：行程頁內＝直接捲到「現在」（不動 hash，chip 交給 spy）；在訂票/資訊頁＝先切回行程再捲
   var pendingNow = false;
   function goNow() {
     if (!todaySec) return;
     pendingDayScroll = null;
-    if (document.body.getAttribute('data-view') !== 'days') { pendingNow = true; location.hash = '#' + todaySec.id; return; }
+    if (!isDaysView()) { pendingNow = true; location.hash = '#' + todaySec.id; return; }
     setActiveChip(todaySec.id, true); // 先寫（語意即「今天」）：rail 置中要在啟動平滑捲動前，寫在後會取消動畫
     placeNowLine();
     scrollToNow();
@@ -1436,9 +1471,9 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
   window.addEventListener('hashchange', function () {
     pendingDayScroll = null;
     fuseSeq++; // 取消尚未完成的日期跳轉保險絲；新目的地若需平滑捲動會取得新的 seq
-    var prevView = lastView;
+    var prevView = document.body.getAttribute('data-view'); // render() 還沒跑，DOM 上仍是上一個 view
     render(); // 同步：data-view 已生效，且瀏覽器的 fragment 跳轉早於本 handler
-    if (document.body.getAttribute('data-view') !== 'days') { window.scrollTo({ top: 0, behavior: 'instant' }); return; } // 兩參數 scrollTo 會吃 CSS smooth，切頁要 instant
+    if (!isDaysView()) { window.scrollTo({ top: 0, behavior: 'instant' }); return; } // 兩參數 scrollTo 會吃 CSS smooth，切頁要 instant
     if (pendingNow) {
       pendingNow = false;
       placeNowLine();
@@ -1450,7 +1485,7 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     var id = activeDayFromHash();
     var target = id ? document.getElementById(id) : null;
     if (prevView && prevView !== 'days') {
-      if (target) target.scrollIntoView({ behavior: 'instant' });
+      if (target) smoothTo(target, 'start', null, true);
       else window.scrollTo({ top: 0, behavior: 'instant' });
     } else if (target) {
       smoothTo(target);
@@ -1478,30 +1513,30 @@ footer { max-width: 40rem; margin: var(--sp-6) auto 0; padding: 0 var(--sp-4) va
     });
   });
 
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) return;
-    recomputeToday(); // 可能已跨過午夜：banner／now 線／訂票倒數重算；長卷軸下不自動跳頁，由使用者按「今天」
+  // 所有「跟著今天走」的 render 收在一起：順序有依賴（render→renderDayBanner→preTripBanner 會讀訂票狀態），
+  // 分寫兩份的話，日後多一個日期衍生的 render 就得記得補到兩個相隔很遠的地方。
+  // 不併進 recomputeToday()：它在 var REDUCED 賦值之前就先跑過一次，那時 render() 會讀到 undefined 的 REDUCED。
+  function refreshAll() {
     renderBookings();
     render();
     placeNowLine();
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) return;
+    recomputeToday(); // 可能已跨過午夜：banner／now 線／訂票倒數重算；長卷軸下不自動跳頁，由使用者按「今天」
+    refreshAll();
   });
-  renderBookings();
-  render();
-  placeNowLine();
-  // 載入時若正顯示今天，直接定位到「現在」。瀏覽器的 hash fragment 跳轉可能晚於本行，
-  // 故再於 load 補一次；rAF 在沒產生 frame 的分頁不會回呼，不能倚賴。
+  refreshAll();
+  // 載入時的定位：瀏覽器的 hash fragment 跳轉可能晚於本行，故再於 load 補一次；
+  // rAF 在沒產生 frame 的分頁不會回呼，不能倚賴。
+  function nowAndOnLoad(fn) { fn(); window.addEventListener('load', fn, { once: true }); }
+  var hashDay = activeDayFromHash();
+  var deepLinkTarget = hashDay && document.getElementById(hashDay);
   if (todaySec && currentDayId() === todaySec.id) {
-    var jumpToNow = function () { scrollToNow(true); };
-    jumpToNow();
-    window.addEventListener('load', jumpToNow, { once: true });
-  } else if (activeDayFromHash()) {
+    nowAndOnLoad(function () { scrollToNow(true); });
+  } else if (deepLinkTarget) {
     // deep link #dN：多數瀏覽器載入會自己定位，這裡補一手（有環境不做 fragment 捲動）；同位置時是 no-op
-    var lt = document.getElementById(activeDayFromHash());
-    if (lt) {
-      var jumpToDay = function () { lt.scrollIntoView({ behavior: 'instant' }); };
-      jumpToDay();
-      window.addEventListener('load', jumpToDay, { once: true });
-    }
+    nowAndOnLoad(function () { smoothTo(deepLinkTarget, 'start', null, true); });
   }
 })();
 </script>
